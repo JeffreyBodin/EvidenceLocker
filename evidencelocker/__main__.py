@@ -5,8 +5,6 @@ from os import environ
 import secrets
 import time
 
-import alembic.config
-
 from flask import *
 from flaskext.markdown import Markdown
 
@@ -28,10 +26,6 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_for=2)
 
 #===CONFIGS===
 app.config['DATABASE_URL']                  = environ.get("DATABASE_URL",'').replace("postgres://", "postgresql://")
-if not app.config['DATABASE_URL']:
-    cfg=alembic.config.Config('alembic.ini')
-    app.config['DATABASE_URL']=cfg.get_main_option('sqlalchemy.url')
-    del cfg
 
 app.config["HCAPTCHA_SECRET"]               = environ.get("HCAPTCHA_SECRET")
 app.config["HCAPTCHA_SITEKEY"]              = environ.get("HCAPTCHA_SITEKEY")

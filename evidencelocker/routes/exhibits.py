@@ -59,7 +59,7 @@ def post_create_exhibit(user):
     g.db.refresh(exhibit)
 
     #handle attached file
-    if "file" in request.files:
+    if request.files.get("file"):
         file=request.files["file"]
 
         #check file type
