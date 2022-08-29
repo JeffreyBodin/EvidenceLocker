@@ -2,7 +2,10 @@
 $("#oathcheck").change(function(){
   $('.signature-field').prop('disabled', !$('#oathcheck').prop('checked'));
   $('#sig-section').toggleClass('text-muted');
-  var txt ='Save';
+  var txt ='Save Changes';
+  if (window.location.href.endsWith("/create_exhibit")) {
+    txt="Save"
+  }
   if ($('#oathcheck').prop('checked')){
     txt='Sign and Save'
   }
