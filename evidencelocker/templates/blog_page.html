@@ -24,8 +24,45 @@
   </div>
   <div class="card-body">
     {% if b.author==user %}
-      <a class="btn btn-primary text-white" role="button" href="/edit_blog/{{ b.b36id }}">Edit</a>
+      <a class="btn btn-primary text-white" role="button" data-bs-toggle="modal" data-bs-target="#editModal">Edit</a>
     {% endif %}
   </div>
 </div>
+{% endblock %}
+
+{% block modal %}
+{% if b.author==user %}
+<!--Edit modal-->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Edit Exhibit</h5>
+        <button type="button" class="close border-0 bg-transparent" data-bs-dismiss="modal" aria-label="Close">
+          <span class="text-black" aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="blog-edit-form" action="{{ request.path }}" method="post" class="m-1">
+
+          <input type="hidden" name="csrf_token" value="{{ user.csrf_token }}">
+
+          <label for="input-title" class="mt-3 fw-bold">Title</label>
+          <input class="form-control" id="input-title" type="text" name="title" value="{{ b.title }}" required>
+
+          <label for="input-body" class="mt-3 fw-bold">Text</label>
+          <textarea id="input-body" form="blog-edit-form" name="body" class="form-control w-100" rows=5>{{ b.text_raw }}</textarea>
+
+
+          <input id="savebutton" class="btn btn-primary text-white w-100 my-3" value="Save" type="submit">
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <input id="savebutton" type="submit" form="blog-edit-form" class="btn btn-primary save-btn" value="Save Changes"></button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
 {% endblock %}
