@@ -52,6 +52,7 @@ function delete_toast(url) {
       $('#toast-error').toast('show')
     }
   };
+  xhr.send(form)
 }
 
 //attach delete function to delete buttons
