@@ -90,7 +90,7 @@
           <input id="image_action" type="hidden" name="image_action" value="none">
 
           <label for="input-body" class="mt-3 fw-bold">Text</label>
-          <textarea id="input-body" form="exhibit-create-form" name="body" class="form-control w-100" rows="5" placeholder="If you're attaching an image, make sure you describe it and why it's important.">{{ e.text_raw }}</textarea>
+          <textarea id="input-body" form="exhibit-edit-form" name="body" class="form-control w-100" rows="5" placeholder="If you're attaching an image, make sure you describe it and why it's important.">{{ e.text_raw }}</textarea>
 
           <div class="custom-control custom-checkbox mt-4 d-flex">
             <input type="checkbox" class="custom-control-input m-1" id="oathcheck" name="oath_perjury" value="true">
@@ -114,7 +114,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <input type="submit" form="exhibit-edit-form" class="btn btn-primary save-btn">Save Changes</button>
+        <input type="submit" form="exhibit-edit-form" class="btn btn-primary save-btn" value="Save Changes"></button>
       </div>
     </div>
   </div>
