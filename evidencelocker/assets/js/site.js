@@ -141,3 +141,12 @@ $("#img-toggle-button").click(function(){
   $("#img-toggle-icon").toggleClass("fa-image-slash");
   $("#img-toggle-display").toggleClass("d-none")
 })
+
+
+//Auto-expanding textarea
+$("textarea").each(function () {
+  this.setAttribute("style", "height:" + (this.scrollHeight) + "px;overflow-y:hidden;");
+}).on("input", function () {
+  this.style.height = "auto";
+  this.style.height = (this.scrollHeight) + "px";
+});
