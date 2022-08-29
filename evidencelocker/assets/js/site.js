@@ -54,6 +54,11 @@ function delete_toast(url) {
   };
 }
 
+//attach delete function to delete buttons
+$(".delete-btn").click(function(){
+  delete_toast(window.location.href)
+})
+
 //post form toast utility function
 function post_form_toast(form_id) {
   var xhr = new XMLHttpRequest();
