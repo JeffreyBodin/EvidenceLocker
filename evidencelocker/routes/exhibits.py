@@ -210,25 +210,8 @@ def get_locker_username_exhibit_verification(user, username, exhibit_ids):
         user=user
         )
 
-@app.get("/edit_exhibit/<eid>")
-@logged_in_victim
-def get_edit_exhibit_eid(user, eid):
 
-    exhibit = get_exhibit_by_id(eid)
-
-    if exhibit.author != user:
-        abort(404)
-
-    if exhibit.signed_utc:
-        return redirect(exhibit.permalink)
-
-    return render_template(
-        "create_exhibit.html",
-        user=user,
-        e=exhibit
-        )
-
-@app.post("/edit_exhibit/<eid>")
+@app.post("/locker/<username>/exhibit/<eid>/<anything>")
 @logged_in_victim
 def post_edit_exhibit_eid(user, eid):
 
@@ -239,10 +222,6 @@ def post_edit_exhibit_eid(user, eid):
 
     if exhibit.signed_utc:
         abort(403)
-
-
-
-
 
     title = bleachify(request.form.get("title"))
 
