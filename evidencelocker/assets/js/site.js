@@ -144,11 +144,16 @@ $("#img-toggle-button").click(function(){
 
 
 //Auto-expanding textarea
-$("textarea").each(function () {
-  this.style.height = "auto";
-  this.style.height = (this.scrollHeight+3) + "px";
-});
+
 $("textarea").on("input", function () {
   this.style.height = "auto";
   this.style.height = (this.scrollHeight+3) + "px";
 });
+
+setTimeout(function(){
+  $("textarea").each(function () {
+    this.style.height = "auto";
+    this.style.height = (this.scrollHeight+3) + "px";
+  })
+},
+1000);
