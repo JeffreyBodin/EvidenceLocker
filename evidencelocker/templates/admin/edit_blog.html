@@ -1,6 +1,6 @@
 {% extends "base_centered.html" %}
 
-{% block title %}TEL - {{ "Edit Blog" if e else "Create Blog" }}{% endblock %}
+{% block title %}TEL - Create News Post{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center mx-0">
@@ -9,13 +9,7 @@
       {% if error %}
       <p class="text-danger">{{ error }}</p>
       {% endif %}
-      {% if b %}
-      <h1 class="h2 mx-1">Edit Blog Post</h1>
-      {% else %}
-      <h1 class="h2 mx-1">Create Blog Post</h1>
-      {% endif %}
-
-
+      <h1 class="h2 mx-1">Create News Post</h1>
       {% if request.args.get("error") %}
       <p class="text-danger my-4">{{ request.args.get("error") }}</p>
       {% endif %}
@@ -24,10 +18,10 @@
         <input type="hidden" name="csrf_token" value="{{ user.csrf_token }}">
 
         <label for="input-title" class="mt-3 fw-bold">Title</label>
-        <input class="form-control" id="input-title" type="text" name="title" value="{{ b.title if b else title }}" required>
+        <input class="form-control" id="input-title" type="text" name="title" value="{{ title }}" required>
 
         <label for="input-body" class="mt-3 fw-bold">Text</label>
-        <textarea id="input-body" form="exhibit-create-form" name="body" class="form-control w-100" rows=5>{{ b.text_raw if b else body }}</textarea>
+        <textarea id="input-body" form="exhibit-create-form" name="body" class="form-control w-100" rows=5>{{ body }}</textarea>
 
 
         <input id="savebutton" class="btn btn-primary text-white w-100 my-3" value="Save" type="submit">

@@ -63,22 +63,10 @@ def post_blog_admin(user):
     g.db.commit()
     return redirect(blog.permalink)
 
-@app.get("/edit_blog/<bid>")
-@logged_in_admin
-def get_blog_edit_bid(user, bid):
-
-    blog = get_blog_by_id(bid)
-
-    return render_template(
-        "admin/edit_blog.html",
-        user=user,
-        b=blog
-        )
-
-@app.post("/edit_blog/<bid>")
+@app.post("/news/<bid>/<anything>")
 @logged_in_admin
 @validate_csrf_token
-def post_edit_blog_bid(user, bid):
+def post_edit_blog_bid(user, bid, anything):
 
     blog = get_blog_by_id(bid)
 
