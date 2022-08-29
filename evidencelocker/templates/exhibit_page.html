@@ -68,7 +68,7 @@
         </button>
       </div>
       <div class="modal-body">
-        This draft exhibit will be permanently deleted.
+        This draft exhibit{% if e.image_sha256 %}, including its attached image,{% endif %} will be permanently deleted.
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
