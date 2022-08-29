@@ -213,7 +213,7 @@ def get_locker_username_exhibit_verification(user, username, exhibit_ids):
 
 @app.post("/locker/<username>/exhibit/<eid>/<anything>")
 @logged_in_victim
-def post_edit_exhibit_eid(user, eid):
+def post_locker_username_exhibit_eid_anything(user, username, eid, anything):
 
     exhibit = get_exhibit_by_id(eid)
 
