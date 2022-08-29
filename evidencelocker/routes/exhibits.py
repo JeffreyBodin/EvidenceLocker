@@ -135,9 +135,12 @@ def delete_locker_username_exhibit_eid_anything(user, username, eid, anything):
     if exhibit.signed_utc:
         return jsonify({"error":"Cannot delete signed content"})
 
+    if exhibit.image_sha256:
+        s3_delete_file(exhibit.pic_permalink)
+    
     g.db.delete(exhibit)
-    g.db.commit
-        return redirect(f"/locker/{user.username}")
+    g.db.commit()
+    return redirect(f"/locker/{user.username}")
 
 @app.get("/locker/<username>/exhibit/<eid>/<anything>/signature")
 @logged_in_desired
