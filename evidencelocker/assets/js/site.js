@@ -102,10 +102,10 @@ $("#dark-mode-toggle").click(function(){
     callback=function(){
       var s = $('#mainstyle')
       if( s.prop('href').endsWith('light.css')){
-        s.prop('href','/assets/style/dark.css?v=1.0.16')
+        s.prop('href','/assets/style/dark.css?v=1.0.17')
       }
       else{
-        s.prop('href','/assets/style/light.css?v=1.0.16')
+        s.prop('href','/assets/style/light.css?v=1.0.17')
       }
     })
 })
