@@ -17,7 +17,10 @@ function post(url, callback, errortext) {
   var form = new FormData()
   form.append("csrf_token", csrftoken());
   xhr.withCredentials=true;
-  xhr.onerror=function() { alert(errortext); };
+  xhr.onerror=function() { 
+      $('#toast-error .toast-text').text(errortext);
+      $('#toast-error').toast('show')
+  };
   xhr.onload = function() {
     if (xhr.status >= 200 && xhr.status < 300) {
       callback();
@@ -26,6 +29,29 @@ function post(url, callback, errortext) {
     }
   };
   xhr.send(form);
+}
+
+//delete utility function
+function delete_toast(url) {
+  var xhr = new XMLHttpRequest();
+  xhr.open("DELETE", url, true);
+  var form = new FormData()
+  form.append("csrf_token", csrftoken());
+  xhr.withCredentials=true;
+  xhr.onerror=function() { 
+      $('#toast-error .toast-text').text("Something went wrong. Please try again later.");
+      $('#toast-error').toast('show')
+  };
+  xhr.onload = function() {
+    data=JSON.parse(xhr.response);
+    if (xhr.status >= 200 && xhr.status < 300) {
+      $('#toast-success .toast-text').text(data['message']);
+      $('#toast-success').toast('show')
+    } else {
+      $('#toast-error .toast-text').text(data['error']);
+      $('#toast-error').toast('show')
+    }
+  };
 }
 
 //post form toast utility function
