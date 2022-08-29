@@ -15,7 +15,7 @@
     {% endif %}
     {% if e.author==user and not e.signed_utc %}
       <a class="btn btn-primary text-white" role="button" href="/edit_exhibit/{{ e.b36id }}">Edit</a>
-      <a class="btn btn-danger text-white" data-toggle="modal" data-target="#deleteModal" role="button">Delete</a>
+      <a class="btn btn-danger text-white" data-bs-toggle="modal" data-bs-target="#deleteModal" role="button">Delete</a>
     {% endif %}
   </div>
 </div>
@@ -63,7 +63,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLongTitle">Are you sure?</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -71,7 +71,7 @@
         This draft exhibit{% if e.image_sha256 %}, including its attached image,{% endif %} will be permanently deleted.
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
         <button type="button" class="btn btn-danger delete-btn">Delete Exhibit</button>
       </div>
     </div>
