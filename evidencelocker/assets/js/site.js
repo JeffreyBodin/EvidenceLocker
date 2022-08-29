@@ -47,6 +47,8 @@ function delete_toast(url) {
     if (xhr.status >= 200 && xhr.status < 300) {
       $('#toast-success .toast-text').text(data['message']);
       $('#toast-success').toast('show')
+    } else if (xhr.status >= 300 && xhr.status < 400 ) {
+      window.location.href=data['redirect']
     } else {
       $('#toast-error .toast-text').text(data['error']);
       $('#toast-error').toast('show')
