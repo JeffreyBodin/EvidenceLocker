@@ -98,6 +98,7 @@ def logged_in_any(f):
         utype=session.get("utype")
         uid=session.get("uid")
 
+        # timeouts
         if utype=="v" and g.time-session.get("last_request",0)<3600:
             user = get_victim_by_id(uid)
         elif utype=="p" and g.time-session.get("last_request",0)<86400:
