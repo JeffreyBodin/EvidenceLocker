@@ -150,10 +150,9 @@ $("textarea").on("input", function () {
   this.style.height = (this.scrollHeight+3) + "px";
 });
 
-setTimeout(function(){
+$("#editModal").on("shown.bs.modal", function(){
   $("textarea").each(function () {
     this.style.height = "auto";
     this.style.height = (this.scrollHeight+3) + "px";
   })
-},
-1000);
+});
