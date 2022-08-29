@@ -145,7 +145,8 @@ $("#img-toggle-button").click(function(){
 
 //Auto-expanding textarea
 $("textarea").each(function () {
-  this.setAttribute("style", "height:" + (this.scrollHeight+3) + "px;overflow-y:hidden;");
+  this.style.height = "auto";
+  this.style.height = (this.scrollHeight+3) + "px";
 }).on("input", function () {
   this.style.height = "auto";
   this.style.height = (this.scrollHeight+3) + "px";
