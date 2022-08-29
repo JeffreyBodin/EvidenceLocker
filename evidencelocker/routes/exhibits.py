@@ -120,6 +120,24 @@ def get_locker_username_exhibit_eid_anything(user, username, eid, anything):
         user=user
         )
 
+@app.delete("/locker/<username>/exhibit/<eid>/<anything>")
+@logged_in_victim
+def delete_locker_username_exhibit_eid_anything(user, username, eid, anything):
+    exhibit = get_exhibit_by_id(eid)
+
+    if exhibit.author != user:
+        abort(404)
+
+    if username != exhibit.author.username:
+        abort(404)
+
+    if exhibit.signed_utc:
+        return jsonify({"error":"Cannot delete signed content"})
+
+    g.db.delete(exhibit)
+    g.db.commit
+        return redirect(f"/locker/{user.username}")
+
 @app.get("/locker/<username>/exhibit/<eid>/<anything>/signature")
 @logged_in_desired
 def get_locker_username_exhibit_eid_anything_signature(user, username, eid, anything):
