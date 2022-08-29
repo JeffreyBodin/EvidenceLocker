@@ -145,9 +145,8 @@ $("#img-toggle-button").click(function(){
 
 //Auto-expanding textarea
 $("textarea").each(function () {
-  var h= this.scrollHeight + 3;
-  this.setAttribute("style", "height:" + (h) + "px;overflow-y:hidden;");
+  this.setAttribute("style", "height:" + (this.scrollHeight+3) + "px;overflow-y:hidden;");
 }).on("input", function () {
   this.style.height = "auto";
-  this.style.height = (h) + "px";
+  this.style.height = (this.scrollHeight+3) + "px";
 });
