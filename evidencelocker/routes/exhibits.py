@@ -133,7 +133,7 @@ def delete_locker_username_exhibit_eid_anything(user, username, eid, anything):
         abort(404)
 
     if exhibit.signed_utc:
-        return jsonify({"error":"Cannot delete signed content"})
+        return jsonify({"error":"Cannot delete signed content"}), 403
 
     if exhibit.image_sha256:
         s3_delete_file(exhibit.pic_permalink)
