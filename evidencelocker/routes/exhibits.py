@@ -305,7 +305,7 @@ def get_locker_username_exhibit_eid_anything_signature(username, eid, anything):
         return jsonify({"error":"Exhibit is not signed"}), 400
 
     data={
-        "json_for_sig": mistletoe.markdown(pformat(exhibit.json_for_sig)),
+        "json_for_sig": mistletoe.markdown(pformat(exhibit.json_for_sig)).replace("<p></p>",""),
         "live_sha256_with_fresh_image_hash": exhibit.live_sha256_with_fresh_image_hash,
         "signing_sha256": exhibit.signing_sha256,
         "signed_string": exhibit.signed_string,
