@@ -162,7 +162,7 @@ def get_locker_username_all_signed_exhibits(username):
 
 @app.get("/locker/<username>/exhibits/<exhibit_ids>")
 @logged_in_desired
-def get_locker_username_exhibit_verification(user, username, exhibit_ids):
+def get_locker_username_exhibit_verification(username, exhibit_ids):
 
     target_user=get_victim_by_username(username)
 
