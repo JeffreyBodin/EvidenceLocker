@@ -12,7 +12,7 @@ def get_locker_username(username):
 
     target_user = get_victim_by_username(username)
 
-    if not target_user.can_be_viewed_by_user():
+    if not target_user.can_be_viewed_by_user(g.user):
         abort(404)
 
     if request.path.endswith('.json'):
