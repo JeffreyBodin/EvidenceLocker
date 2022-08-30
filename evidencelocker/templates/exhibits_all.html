@@ -90,7 +90,7 @@
         <p>File integrity over time is verified with SHA-256 hashes, calculated using <code>hashlib.new('sha256', json.dumps(data, sort_keys=True).encode('utf-8')).hexdigest()</code>, where <code>data</code> is the following Python dictionary representation of this exhibit:</p>
         <pre id="field-json-for-sig" class="bg-dark text-light"></pre>
         <p>Exhibit's SHA-256 saved at time of signing (<span id="field-signed-string"></span>):<br><code id="field-signing-sha256"></code></p>
-        <p>Exhibit's SHA-256 computed right now from raw live data<span class="if-image-sha256"> including <a id="field-pic-permalink" target="_blank">live image</a></span>:<br><code id="field-live-sha256"></code></p>
+        <p>Exhibit's SHA-256 computed right now from raw live data<span class="if-image d-none"> including <a id="field-pic-permalink" target="_blank">live image</a></span>:<br><code id="field-live-sha256"></code></p>
         <p><i class="text-success fas fa-signature-lock"></i> This exhibit has not been altered since it was signed.</p>
       </div>
       <div class="modal-footer">

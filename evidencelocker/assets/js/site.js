@@ -156,3 +156,40 @@ $("#editModal").on("shown.bs.modal", function(){
     this.style.height = (this.scrollHeight+3) + "px";
   })
 });
+
+//exhibit listing sig url thing
+$(".sig-btn").on("click", function(){
+  var xhr = new XMLHttpRequest();
+  url=$(this).data('url');
+  xhr.open("GET", url, true);
+  xhr.withCredentials=true;
+  xhr.onerror=function() { 
+      $('#toast-error .toast-text').text("Something went wrong. Please try again later.");
+      $('#toast-error').toast('show')
+  };
+  xhr.onload = function() {
+    data=JSON.parse(xhr.response);
+    if (xhr.status >= 200 && xhr.status < 300) {
+      $("#field-json-for-sig").html(data.json_for_sig);
+      $("#field-signed-string").text(data.signed_string);
+      $("#field-signing-sha256").text(data.signing_sha256);
+      $("#field-live-sha256").text(data.live_sha256_with_fresh_image_hash);
+      if (data.pic_permalink){
+        $(".if-image").removeClass("d-none");
+        $("#field-pic-permalink").prop("href", data.pic_permalink);
+      } else {
+        $(".if-image").addClass("d-none");
+      }
+      if (data.sig_valid) {
+        $("#display-sig-valid").removeClass('d-none');
+        $("#display-sig-invalid").addClass('d-none');
+      } else {
+        $("#display-sig-valid").addClass('d-none');
+        $("#display-sig-invalid").removeClass('d-none');
+      }
+    } else {
+      $('#toast-error .toast-text').text(data['error']);
+      $('#toast-error').toast('show')
+    }
+  };
+})
