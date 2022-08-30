@@ -33,26 +33,28 @@
     <div>
     {{ e.text_html | safe }}
     </div>
-    <div class="mt-4 border-top pt-4">
+  </div>
+
+  <div class="card-footer">
+
     {% if e.signed_utc %}
       <p>I swear, under penalty of perjury, that to the best of my current knowledge, the foregoing statement is true.</p>
-      <p><i class="fas fa-fw {% if e.sig_valid %}fa-signature-lock text-success{% else %}fa-signature-slash text-danger{% endif %}" data-toggle="tooltip" data-placement="bottom" title="Exhibit signed"></i> <span class="text-small"><a href="{{ e.sig_permalink }}" target="_blank">{{ e.signed_string }}</a></span></p>
+      <p><a data-bs-toggle="modal" data-bs-target="#sigModal" role="button"><i class="fas fa-fw {% if e.sig_valid %}fa-signature-lock text-success{% else %}fa-signature-slash text-danger{% endif %}" data-toggle="tooltip" data-placement="bottom" title="Exhibit signed"></i> <span class="text-small">{{ e.signed_string }}</span></a></p>
     {% else %}
       <p><i class="fas fa-fw fa-signature text-danger"></i> Not signed</p>
     {% endif %}
-    </div>
-  </div>
 
-  <div class="card-footer d-lg-none">
-    <p><i class="fas fa-fw fa-user-pen" data-toggle="tooltip" data-placement="top" title="Exhibit Author"></i> <span class="text-small"><a href="{{ e.author.permalink }}">{{ e.author.username }}</a></span></p>
-    <p><i class="fas fa-fw fa-file-plus" data-toggle="tooltip" data-placement="top" title="Exhibit created"></i> <span class="text-small">{{ e.created_string }}</span></p>
-    {% if e.edited_utc %}
-      <p><i class="fas fa-fw fa-pen-to-square" data-toggle="tooltip" data-placement="top" title="Exhibit last edited"></i> <span class="text-small">{{ e.edited_string }}</span></p>
-    {% endif %}
-    {% if e.author==user and not e.signed_utc %}
-      <a class="btn btn-primary text-white" data-bs-toggle="modal" data-bs-target="#editModal" role="button">Edit</a>
-      <a class="btn btn-danger text-white" data-bs-toggle="modal" data-bs-target="#deleteModal" role="button">Delete</a>
-    {% endif %}
+    <div class="d-lg-none">
+      <p><i class="fas fa-fw fa-user-pen" data-toggle="tooltip" data-placement="top" title="Exhibit Author"></i> <span class="text-small"><a href="{{ e.author.permalink }}">{{ e.author.username }}</a></span></p>
+      <p><i class="fas fa-fw fa-file-plus" data-toggle="tooltip" data-placement="top" title="Exhibit created"></i> <span class="text-small">{{ e.created_string }}</span></p>
+      {% if e.edited_utc %}
+        <p><i class="fas fa-fw fa-pen-to-square" data-toggle="tooltip" data-placement="top" title="Exhibit last edited"></i> <span class="text-small">{{ e.edited_string }}</span></p>
+      {% endif %}
+      {% if e.author==user and not e.signed_utc %}
+        <a class="btn btn-primary text-white" data-bs-toggle="modal" data-bs-target="#editModal" role="button">Edit</a>
+        <a class="btn btn-danger text-white" data-bs-toggle="modal" data-bs-target="#deleteModal" role="button">Delete</a>
+      {% endif %}
+    </div>
   </div>
 </div>
 {% endblock %}
@@ -132,6 +134,33 @@
       </div>
       <div class="modal-body">
         This draft exhibit{% if e.image_sha256 %}, including its attached image,{% endif %} will be permanently deleted.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger delete-btn">Delete Exhibit</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% if e.signed_utc %}
+<!--Signature modal-->
+<div class="modal fade" id="sigModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Signature</h5>
+        <button type="button" class="close border-0 bg-transparent" data-bs-dismiss="modal" aria-label="Close">
+          <span class="text-black" aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>File integrity over time is verified with SHA-256 hashes, calculated using <code>hashlib.new('sha256', json.dumps(data, sort_keys=True).encode('utf-8')).hexdigest()</code>, where <code>data</code> is the following Python dictionary representation of this exhibit:</p>
+        <pre>{{ e.json_for_sig | pprint }}</pre>
+        <p>Exhibit's SHA-256 saved at time of signing ({{ e.signed_string }}):<br><code>{{ e.signing_sha256 }}</code></p>
+        <p>Exhibit's SHA-256 computed right now from raw data{% if e.image_sha256 %} including <a href="{{ e.pic_permalink }}{% if not user %}?token={{ e.pic_permalink | path_token(e.author) }}{% endif %}" target="_blank">live image</a>{% endif %}:<br><code>{{ e.live_sha256_with_fresh_image_hash }}</code></p>
+        <p>{% if e.sig_valid_with_fresh_image %}<i class="text-success fas fa-signature-lock"></i> This exhibit has not been altered since it was signed.{% else %}<i class="text-danger fas fa-signature-slash"></i> This exhibit may have been altered since it was signed.{% endif %}</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
