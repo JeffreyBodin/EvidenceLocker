@@ -33,6 +33,15 @@ def post_create_exhibit():
 
     signed = request.form.get("oath_perjury", False)
 
+    #check for duplicates
+
+    if existing := g.db.query(Exhibit).filter_by(
+        author_id=g.user.id,
+        title=title,
+        body_html=body_html).first()
+    
+        return redirect(existing.permalink)
+
     if signed:
         if not g.user.validate_password(request.form.get("password")) or not g.user.validate_otp(request.form.get("otp_code")):
             return render_template(
