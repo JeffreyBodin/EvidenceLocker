@@ -16,15 +16,15 @@ def logged_in_victim(f):
         if g.time - session.get("last_request",0) > 3600:
             abort(401)
             
-        user = get_victim_by_id(session.get("uid"))
+        g.user = get_victim_by_id(session.get("uid"))
 
-        if not user.otp_secret and request.path != "/set_otp" and not request.path.startswith("/otp_secret_qr/"):
+        if not g.user.otp_secret and request.path != "/set_otp" and not request.path.startswith("/otp_secret_qr/"):
             return redirect("/set_otp")
 
-        if user.banned_utc:
-            return render_template('banned.html', user=user), 403
+        if g.user.banned_utc:
+            return render_template('banned.html'), 403
             
-        resp = make_response(f(user, *args, **kwargs))
+        resp = make_response(f(*args, **kwargs))
         resp.headers['Cache-Control'] = "private"
         return resp
     
@@ -45,18 +45,18 @@ def logged_in_police(f):
         if g.time - session.get("last_request",0) > 86400: #60*60*24
             abort(401)
             
-        user = get_police_by_id(session.get("uid"))
+        g.user = get_police_by_id(session.get("uid"))
 
-        if not user.otp_secret and request.path != "/set_otp" and not request.path.startswith("/otp_secret_qr/"):
+        if not g.user.otp_secret and request.path != "/set_otp" and not request.path.startswith("/otp_secret_qr/"):
             return redirect("/set_otp")
 
-        if not user.is_recently_verified and request.path !="/verify_email":
+        if not g.user.is_recently_verified and request.path !="/verify_email":
             return redirect("/verify_email")
 
-        if user.banned_utc:
-            return render_template('banned.html', user=user), 403
+        if g.user.banned_utc:
+            return render_template('banned.html'), 403
         
-        resp = make_response(f(user, *args, **kwargs))
+        resp = make_response(f(*args, **kwargs))
         resp.headers['Cache-Control'] = "private"
         return resp
     
@@ -73,15 +73,15 @@ def logged_in_admin(f):
         if session.get("utype") != "a":
             abort(403)
 
-        user=get_admin_by_id(session.get("uid"))
+        g.user=get_admin_by_id(session.get("uid"))
 
-        if not user.otp_secret and request.path != "/set_otp" and not request.path.startswith("/otp_secret_qr/"):
+        if not g.user.otp_secret and request.path != "/set_otp" and not request.path.startswith("/otp_secret_qr/"):
             return redirect("/set_otp")
 
-        if user.banned_utc:
-            return render_template('banned.html', user=user), 403
+        if g.user.banned_utc:
+            return render_template('banned.html'), 403
 
-        resp = make_response(f(user, *args, **kwargs))
+        resp = make_response(f(*args, **kwargs))
         resp.headers['Cache-Control'] = "private"
         return resp
 
@@ -100,24 +100,24 @@ def logged_in_any(f):
 
         # timeouts
         if utype=="v" and g.time-session.get("last_request",0)<3600:
-            user = get_victim_by_id(uid)
+            g.user = get_victim_by_id(uid)
         elif utype=="p" and g.time-session.get("last_request",0)<86400:
-            user = get_police_by_id(uid)
+            g.user = get_police_by_id(uid)
         elif utype=="a":
-            user = get_admin_by_id(uid)
+            g.user = get_admin_by_id(uid)
         else:
             abort(401)
 
-        if not user.otp_secret and request.path not in ["/set_otp","/verify_email"] and not request.path.startswith("/otp_secret_qr/"):
+        if not g.user.otp_secret and request.path not in ["/set_otp","/verify_email"] and not request.path.startswith("/otp_secret_qr/"):
             return redirect("/set_otp")
 
-        if user.type_id.startswith('p') and not user.is_recently_verified and request.path not in ["/set_otp","/verify_email"] and not request.path.startswith("/otp_secret_qr/"):
+        if g.user.type_id.startswith('p') and not g.user.is_recently_verified and request.path not in ["/set_otp","/verify_email"] and not request.path.startswith("/otp_secret_qr/"):
             return redirect("/verify_email")
 
-        if user.banned_utc:
-            return render_template('banned.html', user=user), 403
+        if g.user.banned_utc:
+            return render_template('banned.html'), 403
 
-        resp = make_response(f(user, *args, **kwargs))
+        resp = make_response(f(*args, **kwargs))
         resp.headers['Cache-Control'] = "private"
         return resp
 
@@ -132,25 +132,25 @@ def logged_in_desired(f):
         uid=session.get("uid")
 
         if utype=="v":
-            user = get_victim_by_id(uid)
+            g.user = get_victim_by_id(uid)
         elif utype=="p":
-            user = get_police_by_id(uid)
+            g.user = get_police_by_id(uid)
         elif utype=="a":
-            user = get_admin_by_id(uid)
+            g.user = get_admin_by_id(uid)
         else:
-            user=None
+            g.user=None
 
-        if user and not user.otp_secret and request.path not in ["/set_otp","/verify_email"] and not request.path.startswith("/otp_secret_qr/"):
+        if g.user and not g.user.otp_secret and request.path not in ["/set_otp","/verify_email"] and not request.path.startswith("/otp_secret_qr/"):
             return redirect("/set_otp")
 
-        if user and user.type_id.startswith('p') and not user.is_recently_verified and request.path not in ["/set_otp","/verify_email"] and not request.path.startswith("/otp_secret_qr/"):
+        if g.user and g.user.type_id.startswith('p') and not g.user.is_recently_verified and request.path not in ["/set_otp","/verify_email"] and not request.path.startswith("/otp_secret_qr/"):
             return redirect("/verify_email")
 
-        if user and user.banned_utc:
-            return render_template('banned.html', user=user), 403
+        if g.user and g.user.banned_utc:
+            return render_template('banned.html'), 403
 
-        resp = make_response(f(user, *args, **kwargs))
-        resp.headers['Cache-Control'] = "private" if user else "public"
+        resp = make_response(f(*args, **kwargs))
+        resp.headers['Cache-Control'] = "private" if g.user else "public"
         return resp
 
     wrapper.__name__=f.__name__
@@ -161,10 +161,8 @@ def not_banned(f):
     
     def wrapper(*args, **kwargs):
         
-        user=args[0]
-        
-        if user.is_banned:
-            return render_template("banned.html", user=user), 403
+        if g.user.is_banned:
+            return render_template("banned.html"), 403
         
         return f(*args, **kwargs)
     
@@ -175,14 +173,14 @@ def not_banned(f):
 def validate_csrf_token(f):
     """Always use authentication wrapper above this one"""
 
-    def wrapper(user, *args, **kwargs):
+    def wrapper(*args, **kwargs):
 
         submitted_key = request.values.get("csrf_token", "none")
 
-        if not user.validate_csrf_token(submitted_key):
+        if not g.user.validate_csrf_token(submitted_key):
             abort(401)
 
-        return f(user, *args, **kwargs)
+        return f(*args, **kwargs)
 
     wrapper.__name__ = f.__name__
     wrapper.__doc__ = f.__doc__

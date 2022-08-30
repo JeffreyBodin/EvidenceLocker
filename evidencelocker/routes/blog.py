@@ -6,19 +6,18 @@ from evidencelocker.__main__ import app
 
 @app.get("/news/<bid>/<anything>")
 @logged_in_desired
-def get_blog_bid_anything(user, bid, anything):
+def get_blog_bid_anything(bid, anything):
 
     blog = get_blog_by_id(bid)
 
     return render_template(
-        "blog_page.html",
-        user=user,
+        "blog_page.html"
         b=blog
         )
 
 @app.get("/news")
 @logged_in_desired
-def get_blogs(user):
+def get_blogs():
 
     page=max(0, int(request.args.get("page", 1)))
 
@@ -26,7 +25,6 @@ def get_blogs(user):
 
     return render_template(
         "blogs.html",
-        user=user,
         listing=blogs,
         page=page
         )
@@ -35,15 +33,13 @@ def get_blogs(user):
 
 @app.get("/create_blog")
 @logged_in_admin
-def get_create_blog(user):
-    return render_template(
-        "admin/edit_blog.html",
-        user=user)
+def get_create_blog():
+    return render_template("admin/edit_blog.html")
 
 @app.post("/create_blog")
 @logged_in_admin
 @validate_csrf_token
-def post_blog_admin(user):
+def post_blog_admin():
 
     title = bleachify(request.form.get("title"))
 
@@ -56,7 +52,7 @@ def post_blog_admin(user):
         text_raw=body_raw,
         text_html=body_html,
         created_utc=g.time,
-        author_id=user.id
+        author_id=g.user.id
         )
 
     g.db.add(blog)
@@ -66,7 +62,7 @@ def post_blog_admin(user):
 @app.post("/news/<bid>/<anything>")
 @logged_in_admin
 @validate_csrf_token
-def post_edit_blog_bid(user, bid, anything):
+def post_edit_blog_bid(bid, anything):
 
     blog = get_blog_by_id(bid)
 

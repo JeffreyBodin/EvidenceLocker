@@ -5,11 +5,11 @@
 <div class="px-3 px-md-0">
   <form id="profile-settings-form" method="post">
     <div class="d-grid gap-3">
-      <input type="hidden" name="csrf_token" value="{{ user.csrf_token }}">
+      <input type="hidden" name="csrf_token" value="{{ g.user.csrf_token }}">
       <div class="body d-md-flex ">
         <label for="input-name" class="w-25 fw-bold my-auto text-md-end pe-3">Name</label>
         <div class="w-100">
-          <input id="input-name" class="form-control rounded" id="input-name" name="name" value="{{ user.name if user.name else '' }}">
+          <input id="input-name" class="form-control rounded" id="input-name" name="name" value="{{ g.user.name if g.user.name else '' }}">
         </div>
       </div>
       <div class="body d-md-flex">

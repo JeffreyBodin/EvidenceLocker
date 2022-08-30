@@ -13,7 +13,7 @@
     {% if e.edited_utc %}
       <p><i class="fas fa-fw fa-pen-to-square" data-toggle="tooltip" data-placement="bottom" title="Exhibit last edited"></i> <span class="text-small">{{ e.edited_string }}</span></p>
     {% endif %}
-    {% if e.author==user and not e.signed_utc %}
+    {% if e.author==g.user and not e.signed_utc %}
       <a class="btn btn-primary text-white" data-bs-toggle="modal" data-bs-target="#editModal" role="button">Edit</a>
       <a class="btn btn-danger text-white" data-bs-toggle="modal" data-bs-target="#deleteModal" role="button">Delete</a>
     {% endif %}
@@ -31,7 +31,7 @@
       {% if e.edited_utc %}
         <p><i class="fas fa-fw fa-pen-to-square" data-toggle="tooltip" data-placement="top" title="Exhibit last edited"></i> <span class="text-small">{{ e.edited_string }}</span></p>
       {% endif %}
-      {% if e.author==user and not e.signed_utc %}
+      {% if e.author==g.user and not e.signed_utc %}
         <a class="btn btn-primary text-white" data-bs-toggle="modal" data-bs-target="#editModal" role="button">Edit</a>
         <a class="btn btn-danger text-white" data-bs-toggle="modal" data-bs-target="#deleteModal" role="button">Delete</a>
       {% endif %}
@@ -63,7 +63,7 @@
 {% endblock %}
 
 {% block modal %}
-{% if e.author==user and not e.signed_utc %}
+{% if e.author==g.user and not e.signed_utc %}
 <!--Edit modal-->
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
@@ -77,7 +77,7 @@
       <div class="modal-body">
         <form id="exhibit-edit-form" action="{{ request.path }}" method="post" enctype="multipart/form-data">
 
-          <input type="hidden" name="csrf_token" value="{{ user.csrf_token }}">
+          <input type="hidden" name="csrf_token" value="{{ g.user.csrf_token }}">
 
           <label for="input-title" class="mt-3 fw-bold">Title</label>
           <input class="form-control" id="input-title" type="text" name="title" value="{{ e.title }}" required>
@@ -162,7 +162,7 @@
         <p>File integrity over time is verified with SHA-256 hashes, calculated using <code>hashlib.new('sha256', json.dumps(data, sort_keys=True).encode('utf-8')).hexdigest()</code>, where <code>data</code> is the following Python dictionary representation of this exhibit:</p>
         <pre class="bg-dark text-light">{{ e.json_for_sig | pprint }}</pre>
         <p>Exhibit's SHA-256 saved at time of signing ({{ e.signed_string }}):<br><code>{{ e.signing_sha256 }}</code></p>
-        <p>Exhibit's SHA-256 computed right now from raw live data{% if e.image_sha256 %} including <a href="{{ e.pic_permalink }}{% if not user %}?token={{ e.pic_permalink | path_token(e.author) }}{% endif %}" target="_blank">live image</a>{% endif %}:<br><code>{{ e.live_sha256_with_fresh_image_hash }}</code></p>
+        <p>Exhibit's SHA-256 computed right now from raw live data{% if e.image_sha256 %} including <a href="{{ e.pic_permalink }}{% if not g.user %}?token={{ e.pic_permalink | path_token(e.author) }}{% endif %}" target="_blank">live image</a>{% endif %}:<br><code>{{ e.live_sha256_with_fresh_image_hash }}</code></p>
         <p>{% if e.sig_valid_with_fresh_image %}<i class="text-success fas fa-signature-lock"></i> This exhibit has not been altered since it was signed.{% else %}<i class="text-danger fas fa-signature-slash"></i> This exhibit may have been altered since it was signed.{% endif %}</p>
       </div>
       <div class="modal-footer">

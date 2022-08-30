@@ -11,7 +11,7 @@ from evidencelocker.__main__ import app
 
 @app.get("/agency/<aid>/<anything>")
 @logged_in_desired
-def agency_aid_anything(user, aid, anything=None):
+def agency_aid_anything(aid, anything=None):
 
 
     agency = get_agency_by_id(aid)
@@ -22,27 +22,26 @@ def agency_aid_anything(user, aid, anything=None):
     return render_template(
         "agency.html",
         a=agency,
-        user=user,
-        shared = get_lockershare_by_agency(user, agency) if user and user.type_id.startswith('v') else None
+        shared = get_lockershare_by_agency(g.user, agency) if g.user and g.user.type_id.startswith('v') else None
         )
 
 @app.post("/agency/<aid>/<anything>/share")
 @logged_in_victim
 @validate_csrf_token
-def post_agency_aid_anything_share(user, aid, anything):
+def post_agency_aid_anything_share(aid, anything):
 
     #create sharing record
 
     agency = get_agency_by_id(aid)
 
-    existing_record = get_lockershare_by_agency(user, agency)
+    existing_record = get_lockershare_by_agency(g.user, agency)
 
     if existing_record:
         abort(409)
 
     share_record = LockerShare(
         agency_id=agency.id,
-        victim_id=user.id,
+        victim_id=g.user.id,
         created_utc=g.time
         )
 
@@ -54,7 +53,7 @@ def post_agency_aid_anything_share(user, aid, anything):
 
 @app.get("/search_agencies")
 @logged_in_desired
-def get_agency_country_cc(user):
+def get_agency_country_cc():
 
     cc=request.args.get("cc", None)
     name=request.args.get("name", None)
@@ -75,6 +74,5 @@ def get_agency_country_cc(user):
 
     return render_template(
         "search_agencies.html",
-        listing=agencies,
-        user=user
+        listing=agencies
         )

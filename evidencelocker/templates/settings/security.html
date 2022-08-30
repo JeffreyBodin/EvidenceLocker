@@ -9,7 +9,7 @@
         <label for="current-pw" class="w-25 fw-bold text-md-end pe-3">Change Password</label>
         <div class="w-100">
           <form id="change-pw-form" method="post">
-            <input type="hidden" name="csrf_token" value="{{ user.csrf_token }}">
+            <input type="hidden" name="csrf_token" value="{{ g.user.csrf_token }}">
             <input type="hidden" name="function" value="pw_reset">
             <label for="current-pw" class="mt-1">Current Password</label>
             <input id="current-pw" class="form-control rounded" name="password" type="password">
@@ -31,7 +31,7 @@
         <label for="current-pw" class="w-25 fw-bold text-md-end pe-3">Reset Two-Factor</label>
         <div class="w-100">
           <form id="change-pw-form" method="post">
-            <input type="hidden" name="csrf_token" value="{{ user.csrf_token }}">
+            <input type="hidden" name="csrf_token" value="{{ g.user.csrf_token }}">
             <input type="hidden" name="function" value="otp_reset">
             <label for="current-pw" class="mt-1">Password</label>
             <input id="current-pw" class="form-control rounded" name="password" type="password">

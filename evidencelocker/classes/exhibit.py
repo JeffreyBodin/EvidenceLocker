@@ -129,6 +129,7 @@ class Exhibit(Base, b36ids, time_mixin, json_mixin):
     def sig_valid_with_fresh_image(self):
         return self.signing_sha256==self.live_sha256_with_fresh_image_hash
 
-
-
-    
+    @property
+    @lazy
+    def sig_permalink(self):
+        return f"{self.permalink}/signature"

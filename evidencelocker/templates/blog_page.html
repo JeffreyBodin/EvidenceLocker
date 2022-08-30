@@ -23,7 +23,7 @@
     <p class="fw-bold text-white m-0"><i class="fas fa-fw fa-user-shield"></i> Admin Panel</p>
   </div>
   <div class="card-body">
-    {% if b.author==user %}
+    {% if b.author==g.user %}
       <a class="btn btn-primary text-white" role="button" data-bs-toggle="modal" data-bs-target="#editModal">Edit</a>
     {% endif %}
   </div>
@@ -31,7 +31,7 @@
 {% endblock %}
 
 {% block modal %}
-{% if b.author==user %}
+{% if b.author==g.user %}
 <!--Edit modal-->
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
@@ -45,7 +45,7 @@
       <div class="modal-body">
         <form id="blog-edit-form" action="{{ request.path }}" method="post" class="m-1">
 
-          <input type="hidden" name="csrf_token" value="{{ user.csrf_token }}">
+          <input type="hidden" name="csrf_token" value="{{ g.user.csrf_token }}">
 
           <label for="input-title" class="mt-3 fw-bold">Title</label>
           <input class="form-control" id="input-title" type="text" name="title" value="{{ b.title }}" required>

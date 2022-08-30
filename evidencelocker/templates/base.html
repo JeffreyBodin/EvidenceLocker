@@ -15,10 +15,10 @@
     <!--FontAwesome-->
     <link href="/assets/fontawesome/css/all.min.css" rel="stylesheet">
 
-    {% if user %}
+    {% if g.user %}
     <script nonce="{{ g.time | nonce }}">
       function csrftoken(){
-        return '{{ user.csrf_token }}'
+        return '{{ g.user.csrf_token }}'
       }
     </script>
     {% else %}
@@ -46,19 +46,19 @@
               <li class="nav-item">
                 <a class="nav-link" href="/help/faq">FAQ</a>
               </li>
-              {% if user %}
-              {% if user.type_id.startswith('v') %}
+              {% if g.user %}
+              {% if g.user.type_id.startswith('v') %}
               <li class="nav-item">
                 <a class="nav-link" href="/create_exhibit">Create Exhibit</a>
               </li>
-              {% elif user.type_id.startswith('a') %}
+              {% elif g.user.type_id.startswith('a') %}
               <li class="nav-item">
                 <a class="nav-link" href="/admin_dashboard">Admin Dashboard</a>
               </li>
               {% endif %}
               <li class="nav-item">
                 <form action="/logout" method="post">
-                  <input type="hidden" name="csrf_token" value="{{ user.csrf_token }}">
+                  <input type="hidden" name="csrf_token" value="{{ g.user.csrf_token }}">
                   <input class="nav-link border-0 bg-transparent" type="submit" value="Log Out">
                 </form>
               </li>

@@ -82,6 +82,8 @@ def before_request():
     if "session_id" not in session:
         session["session_id"]=secrets.token_hex(16)
 
+    g.user=None
+
 @app.after_request
 def after_request(resp):
 
