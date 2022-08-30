@@ -12,7 +12,7 @@ from evidencelocker.__main__ import app
 
 @app.get("/admin_dashboard")
 @logged_in_admin
-def admin_dashboard(user):
+def admin_dashboard():
 
     police_count = g.db.query(PoliceUser).filter_by(agency_id=None, banned_utc=0).count()
 
@@ -23,9 +23,9 @@ def admin_dashboard(user):
 
 @app.get("/login_admin")
 @logged_in_desired
-def get_login_admin(user):
+def get_login_admin():
 
-    if user:
+    if g.user:
         return redirect("/")
 
     return render_template(
@@ -96,7 +96,7 @@ def get_agency(aid=None, anything=None):
 @app.post("/agency")
 @logged_in_admin
 @validate_csrf_token
-def post_agency(user):
+def post_agency():
 
     #create agency
 
@@ -148,7 +148,7 @@ def post_agency_aid_anything(aid, anything):
 
 @app.get("/users/police/unverified")
 @logged_in_admin
-def users_police_unverified(user):
+def users_police_unverified():
 
     listing = g.db.query(PoliceUser).filter_by(agency_id=None, banned_utc=0).all()
 
@@ -159,7 +159,7 @@ def users_police_unverified(user):
 
 @app.get("/users/victims")
 @logged_in_admin
-def users_victims(user):
+def users_victims():
 
     page=max(1, int(request.args.get("page",1)))
 
