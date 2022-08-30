@@ -192,4 +192,5 @@ $(".sig-btn").on("click", function(){
       $('#toast-error').toast('show')
     }
   };
+  xhr.send()
 })
