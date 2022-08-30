@@ -11,7 +11,7 @@ def get_blog_bid_anything(bid, anything):
     blog = get_blog_by_id(bid)
 
     return render_template(
-        "blog_page.html"
+        "blog_page.html",
         b=blog
         )
 
