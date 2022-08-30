@@ -293,10 +293,10 @@ def get_locker_username_exhibit_eid_anything_signature(username, eid, anything):
     exhibit = get_exhibit_by_id(eid)
 
     if not exhibit.author.can_be_viewed_by_user(g.user):
-        abort(404)
+        return jsonify({"error": "Exhibit not found"}), 404
 
     if username != exhibit.author.username:
-        abort(404)
+        return jsonify({"error": "Exhibit not found"}), 404
 
     if request.path != exhibit.sig_permalink:
         return redirect(exhibit.sig_permalink)
