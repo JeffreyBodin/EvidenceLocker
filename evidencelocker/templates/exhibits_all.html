@@ -7,8 +7,8 @@
 <h2 class="h3">{{ target_user.name }}</h2>
 {% for e in exhibits %}
 <div id="exhibit-{{ e.b36id }}" class="card border rounded mb-3 avoid-pagebreak">
-  <div class="card-title">
-    <h1 class="h3 text-primary px-3 py-2">{{ e.title }}</h1>
+  <div class="card-header">
+    <h1 class="h3 text-primary"></h1>
     <div>
       <p><i class="fas fa-fw fa-file-plus" data-toggle="tooltip" data-placement="top" title="Exhibit created"></i> <span class="text-small">{{ e.created_string }}</span></p>
       {% if e.edited_utc %}
