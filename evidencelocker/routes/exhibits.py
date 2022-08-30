@@ -5,7 +5,7 @@ from pprint import pprint, pformat
 from io import BytesIO
 import magic
 import mistletoe
-from werkzeug import escape
+import werkzeug.escape
 
 from evidencelocker.decorators.auth import *
 from evidencelocker.helpers.text import raw_to_html, bleachify
@@ -306,7 +306,7 @@ def get_locker_username_exhibit_eid_anything_signature(username, eid, anything):
         return jsonify({"error":"Exhibit is not signed"}), 400
 
     data={
-        "json_for_sig": pformat(exhibit.json_for_sig),
+        "json_for_sig": werkzeug.escape(pformat(exhibit.json_for_sig)),
         "live_sha256_with_fresh_image_hash": exhibit.live_sha256_with_fresh_image_hash,
         "signing_sha256": exhibit.signing_sha256,
         "signed_string": exhibit.signed_string,
