@@ -309,7 +309,8 @@ def get_locker_username_exhibit_eid_anything_signature(username, eid, anything):
         "live_sha256_with_fresh_image_hash": exhibit.live_sha256_with_fresh_image_hash,
         "signing_sha256": exhibit.signing_sha256,
         "signed_string": exhibit.signed_string,
-        "sig_valid": exhibit.sig_valid_with_fresh_image
+        "sig_valid": exhibit.sig_valid_with_fresh_image,
+        "title": exhibit.title
         }
 
     if exhibit.image_sha256:

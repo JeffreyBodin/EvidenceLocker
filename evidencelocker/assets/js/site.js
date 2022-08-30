@@ -174,6 +174,7 @@ $(".sig-btn").on("click", function(){
       $("#field-signed-string").text(data.signed_string);
       $("#field-signing-sha256").text(data.signing_sha256);
       $("#field-live-sha256").text(data.live_sha256_with_fresh_image_hash);
+      $("#field-title").text(data.title)
       if (data.pic_permalink){
         $(".if-image").removeClass("d-none");
         $("#field-pic-permalink").prop("href", data.pic_permalink);
