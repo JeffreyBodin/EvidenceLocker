@@ -142,30 +142,6 @@ def delete_locker_username_exhibit_eid_anything(user, username, eid, anything):
     g.db.commit()
     return jsonify({"redirect":f"/locker/{user.username}"}), 302
 
-@app.get("/locker/<username>/exhibit/<eid>/<anything>/signature")
-@logged_in_desired
-def get_locker_username_exhibit_eid_anything_signature(user, username, eid, anything):
-
-    exhibit = get_exhibit_by_id(eid)
-
-    if not exhibit.author.can_be_viewed_by_user(user):
-        abort(404)
-
-    if username != exhibit.author.username:
-        abort(404)
-
-    if request.path != exhibit.sig_permalink:
-        return redirect(exhibit.sig_permalink)
-
-    if not exhibit.signed_utc:
-        return redirect(exhibit.permalink)
-
-    return render_template(
-        "exhibit_sig.html",
-        e=exhibit,
-        user=user
-        )
-
 @app.get("/locker/<username>/exhibits")
 @logged_in_victim
 def get_locker_username_all_signed_exhibits(user, username):

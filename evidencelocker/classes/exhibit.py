@@ -59,11 +59,6 @@ class Exhibit(Base, b36ids, time_mixin, json_mixin):
         return f"/locker/{self.author.username}/exhibit/{self.b36id}/{output}"
 
     @property
-    @lazy
-    def sig_permalink(self):
-        return f"{self.permalink}/signature"
-
-    @property
     def pic_permalink(self):
         image_type = self.image_type or "png"
         return f"/exhibit_image/{self.b36id}/{self.image_sha256[-6:]}.{image_type}"
