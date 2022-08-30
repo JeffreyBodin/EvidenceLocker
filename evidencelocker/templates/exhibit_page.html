@@ -160,9 +160,9 @@
       </div>
       <div class="modal-body">
         <p>File integrity over time is verified with SHA-256 hashes, calculated using <code>hashlib.new('sha256', json.dumps(data, sort_keys=True).encode('utf-8')).hexdigest()</code>, where <code>data</code> is the following Python dictionary representation of this exhibit:</p>
-        <pre>{{ e.json_for_sig | pprint }}</pre>
+        <pre class="bg-dark text-light">{{ e.json_for_sig | pprint }}</pre>
         <p>Exhibit's SHA-256 saved at time of signing ({{ e.signed_string }}):<br><code>{{ e.signing_sha256 }}</code></p>
-        <p>Exhibit's SHA-256 computed right now from raw data{% if e.image_sha256 %} including <a href="{{ e.pic_permalink }}{% if not user %}?token={{ e.pic_permalink | path_token(e.author) }}{% endif %}" target="_blank">live image</a>{% endif %}:<br><code>{{ e.live_sha256_with_fresh_image_hash }}</code></p>
+        <p>Exhibit's SHA-256 computed right now from raw live data{% if e.image_sha256 %} including <a href="{{ e.pic_permalink }}{% if not user %}?token={{ e.pic_permalink | path_token(e.author) }}{% endif %}" target="_blank">live image</a>{% endif %}:<br><code>{{ e.live_sha256_with_fresh_image_hash }}</code></p>
         <p>{% if e.sig_valid_with_fresh_image %}<i class="text-success fas fa-signature-lock"></i> This exhibit has not been altered since it was signed.{% else %}<i class="text-danger fas fa-signature-slash"></i> This exhibit may have been altered since it was signed.{% endif %}</p>
       </div>
       <div class="modal-footer">
