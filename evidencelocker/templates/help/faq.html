@@ -34,11 +34,13 @@
   "Why is two-factor authentication required?":"""
     Two-factor authentication provides an extra type of account security beyond simply remembering a password. This goes a long way in preventing accounts from being stolen, hacked, or shared. Our users store highly sensitive information with us, so we require all Evidence Locker users - including both victims and law enforcement - to use two-factor authentication.""",
   "How do I identify or validate digital signatures on The Evidence Locker?":'''
-     Whenever a digital signature is displayed, TEL attempts to re-validate the signature data against the Exhibit to which the signature is attached. TEL then displays one of the two following symbols in the signature, based on whether or not the signature has been successfully re-validated:
+     Whenever a digital signature is displayed, TEL attempts to re-validate the signature data against the Exhibit to which the signature is attached. TEL then displays one of the following symbols, based on whether or not the signature has been successfully re-validated:
 
      * <i class="fas fa-signature-lock text-success"></i> - Indicates a successfully re-validated digital signature. The Exhibit has not changed since it was signed.
 
-     * <i class="fas fa-signature-slash text-danger"></i> - Indicates a digital signature that could not be re-validated. The Exhibit may or may not have changed since it was signed. Law enforcement should request that the author re-sign their statement in another format.''',
+     * <i class="fas fa-signature-slash text-danger"></i> - Indicates a digital signature that could not be re-validated. The Exhibit may or may not have changed since it was signed. This symbol does not mean that the statement is false, or that the author is perjuring themselves, or that the statement should be excluded from evidence. It *only* means that the signature itself is broken. Law enforcement should request that the author re-sign their statement in another format.
+
+     * <i class="fas fa-signature text-black"></i> - There is no signature present. The exhibit has not been signed and may still be edited.''',
   "Can I change my username?":"""
     No. Your username is part of the Exhibit data that is used in your digital signatures. Changing your username would invalidate all of your existing digital signatures.""",
   "Why does the timestamp look wrong?":"""
