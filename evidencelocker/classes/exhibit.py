@@ -66,12 +66,12 @@ class Exhibit(Base, b36ids, time_mixin, json_mixin):
     @property
     @lazy
     def signed_string(self):
-        return f"{time.strftime("%d %B %Y at %H:%M:%S", time.gmtime(self.signed_utc))} UTC" if self.signed_utc else None
+        return f'{time.strftime("%d %B %Y at %H:%M:%S", time.gmtime(self.signed_utc))} UTC' if self.signed_utc else None
 
     @property
     @lazy
     def edited_string(self):
-        return f"{time.strftime("%d %B %Y at %H:%M:%S", time.gmtime(self.edited_utc))} UTC" if self.edited_utc else None
+        return f'{time.strftime("%d %B %Y at %H:%M:%S", time.gmtime(self.edited_utc))} UTC' if self.edited_utc else None
 
     @property
     def json(self):

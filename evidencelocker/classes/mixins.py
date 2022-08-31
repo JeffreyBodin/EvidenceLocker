@@ -23,7 +23,7 @@ class time_mixin():
     @property
     @lazy
     def created_string(self):
-        return f"{time.strftime("%d %B %Y at %H:%M:%S", time.gmtime(self.created_utc))} UTC"
+        return f'{time.strftime("%d %B %Y at %H:%M:%S", time.gmtime(self.created_utc))} UTC'
 
     @property
     @lazy
@@ -33,7 +33,7 @@ class time_mixin():
     @property
     @lazy
     def created_date(self):
-        return f"{time.strftime("%d %B %Y", time.gmtime(self.created_utc))} UTC"
+        return f'{time.strftime("%d %B %Y", time.gmtime(self.created_utc))} UTC'
     
     @property
     def age(self):
