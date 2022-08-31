@@ -11,8 +11,14 @@
 
     Do not use your Locker to store photo/video evidence of underage sexual abuse. That counts as child pornography, and The Evidence Locker is not licensed to possess it. Submit it to the [National Center for Missing and Exploited Children](https://www.missingkids.org/) instead.
     ''',
-  "How do I edit or delete the contents of my Locker?":'''
-    Content saved to your Locker is potential evidence in a case against your abuser. Therefore, once you have signed a Locker entry, you cannot edit or delete it. Unsigned entries may still be edited by clicking the "Edit" button on the entry\'s page.''',
+  "How do I edit or delete the contents of my Locker?":"""
+    Content saved to your Locker is potential evidence in a case against your abuser. Therefore, once you have signed a Locker exhibit, you cannot edit or delete it. Unsigned exhibits may still be edited or deleted from the exhibit's page.""",
+  "Why can't I store video or audio in my Locker?":"""
+    Audio and video recording laws vary widely from place to place. Since TEL always provide *all* signed Exhibits in a Locker to law enforcement, we don't want users to to prevent users from accidentally "contaminating" their Locker with illegally obtained evidence. Therefore, TEL does not permit audio or video to be added to Lockers.
+
+    Audio files can be transcribed and saved to TEL as text.
+
+    Individual frames from video files can be captured as images and saved to TEL."""
   "With whom will my locker be shared?":'''
     Your locker may be shared with:
     
@@ -22,13 +28,20 @@
     * Any law enforcement agency in your home country with a warrant that has been domesticated in the United States of America
     ''',
   "I've shared my Locker with law enforcement. Now what?":"""
-    The Evidence Locker cannot initiate legal action on your behalf. You will need to do that yourself. Provide the responding officer, detective, or other law enforcement agent with the link to your Locker.""",
+    The Evidence Locker cannot initiate legal action on your behalf. You will need to do that yourself. Provide the responding officer, detective, or other law enforcement agent with the link to your Locker, or provide them with the public share link on your Locker's export page.""",
   "Can you help review my Locker contents to make sure I have a good case?":"""
     No. The Evidence Locker does not provide legal advice or legal services of any kind. We are merely a specialized data storage and sharing service.""",
   "Why is two-factor authentication required?":"""
     Two-factor authentication provides an extra type of account security beyond simply remembering a password. This goes a long way in preventing accounts from being stolen, hacked, or shared. Our users store highly sensitive information with us, so we require all Evidence Locker users - including both victims and law enforcement - to use two-factor authentication.""",
   "How do I identify or validate digital signatures on The Evidence Locker?":'''
-    Digital signatures that can be verified are identified with the following symbol: <i class="fas fa-signature-lock text-success"></i>\n\nDigital signatures that cannot be verified are identified with this symbol instead: <i class="fas fa-signature-slash text-danger"></i>\n\nMost digital signature symbols can be clicked on to show the detailed cryptographic information associated with them.''',
+     Whenever a digital signature is displayed, TEL attempts to re-validate the signature data against the Exhibit to which the signature is attached. TEL then displays one of the two following symbols in the signature, based on whether or not the signature has been successfully revalidated:
+
+     * <i class="fas fa-signature-lock text-success"></i> - Indicates a successfully re-validated digital signature
+
+     * <i class="fas fa-signature-slash text-danger"></i> - Indicates an unsuccessfully re-validated digital signature
+
+   ''',
+  "Can I change my username?":"No. Your username is part of the Exhibit data that is used in your digital signatures. Changing your username would invalidate all of your existing digital signatures."
   "Why does the timestamp look wrong?":"""
     Timestamps are displayed in UTC or \"Zulu\" time, and adjusted slightly for readability. UTC time is a standardized time format that does not take time zones or daylight savings into consideration. This ensures that there is only one possible way to read any particular timestamp displayed on this site.""",
   "Who owns and runs The Evidence Locker?":"""
