@@ -38,7 +38,7 @@ def post_create_exhibit():
     existing = g.db.query(Exhibit).filter_by(
         author_id=g.user.id,
         title=title,
-        body_html=body_html).first()
+        text_html=body_html).first()
 
     if existing:    
         return redirect(existing.permalink)
