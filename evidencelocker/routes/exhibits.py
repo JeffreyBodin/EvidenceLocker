@@ -37,7 +37,6 @@ def post_create_exhibit(user):
         if not user.validate_password(request.form.get("password")) or not user.validate_otp(request.form.get("otp_code")):
             return render_template(
                 "create_exhibit.html",
-                user=user,
                 error="Invalid signature",
                 title=title,
                 body=body_raw
