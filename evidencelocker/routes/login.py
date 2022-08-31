@@ -87,13 +87,13 @@ def logout():
 
 @app.get("/otp_secret_qr/<secret>.png")
 @logged_in_any
-def mfa_qr(user, secret):
+def mfa_qr(secret):
     x = pyotp.TOTP(secret)
     qr = qrcode.QRCode(
         error_correction=qrcode.constants.ERROR_CORRECT_L
     )
     issuer_name = request.args.get("issuer","TEL")
-    qr.add_data(x.provisioning_uri(user.username, issuer_name=issuer_name))
+    qr.add_data(x.provisioning_uri(g.user.username, issuer_name=issuer_name))
     img = qr.make_image(fill_color="#2589bd", back_color="white")
 
     mem = io.BytesIO()
@@ -104,9 +104,9 @@ def mfa_qr(user, secret):
 
 @app.get("/login")
 @logged_in_desired
-def get_login_victim(user):
+def get_login_victim():
 
-    if user:
+    if g.user:
         return redirect("/")
 
     return render_template(
@@ -116,9 +116,9 @@ def get_login_victim(user):
 
 @app.get("/login_police")
 @logged_in_desired
-def get_login_police(user):
+def get_login_police():
 
-    if user:
+    if g.user:
         return redirect("/")
 
     return render_template(
@@ -128,9 +128,9 @@ def get_login_police(user):
 
 @app.get("/signup")
 @logged_in_desired
-def get_signup_victim(user):
+def get_signup_victim():
 
-    if user:
+    if g.user:
         return redirect("/")
     
     return render_template(
@@ -141,9 +141,9 @@ def get_signup_victim(user):
 
 @app.get("/signup_police")
 @logged_in_desired
-def get_signup_police(user):
+def get_signup_police():
 
-    if user:
+    if g.user:
         return redirect("/")
     
     return render_template(
@@ -154,32 +154,31 @@ def get_signup_police(user):
 
 @app.get("/set_otp")
 @logged_in_any
-def get_set_otp(user):
+def get_set_otp():
 
-    if user.otp_secret:
+    if g.user.otp_secret:
         return redirect("/")
 
     otp_secret=pyotp.random_base32()
-    recovery = compute_otp_recovery_code(user, otp_secret)
+    recovery = compute_otp_recovery_code(g.user, otp_secret)
     recovery=" ".join([recovery[i:i+5] for i in range(0,len(recovery),5)])
 
     return render_template(
         "set_otp.html",
         otp_secret = otp_secret,
         recovery = recovery,
-        user=user
         )
 
 @app.post("/set_otp")
 @logged_in_any
 @validate_csrf_token
-def post_set_otp(user):
+def post_set_otp():
     otp_secret = request.form.get("otp_secret")
     code = request.form.get("otp_code")
 
     totp = pyotp.TOTP(otp_secret)
 
-    if not werkzeug.security.check_password_hash(user.pw_hash, request.form.get("password")):
+    if not werkzeug.security.check_password_hash(g.user.pw_hash, request.form.get("password")):
         return redirect('/set_otp?error=Incorrect%20password')
 
     if not totp.verify(code):
@@ -187,8 +186,8 @@ def post_set_otp(user):
 
 
 
-    user.otp_secret=otp_secret
-    g.db.add(user)
+    g.user.otp_secret=otp_secret
+    g.db.add(g.user)
     g.db.commit()
 
     return redirect("/")
@@ -242,7 +241,7 @@ def post_signup_victim():
         return invalid_signup_victim("hCaptcha verification failed. Please try again.")
     
     #create new vic user
-    user = VictimUser(
+    g.user = VictimUser(
         username=username,
         pw_hash=werkzeug.security.generate_password_hash(request.form.get("password")),
         created_utc=g.time,
@@ -250,11 +249,11 @@ def post_signup_victim():
         country_code=request.headers.get("cf-ipcountry")
     )
 
-    g.db.add(user)
+    g.db.add(g.user)
     g.db.commit()
 
     session["utype"]='v'
-    session["uid"]=user.id
+    session["uid"]=g.user.id
 
     return redirect("/set_otp")
 
@@ -310,7 +309,7 @@ def post_signup_police():
         return invalid_signup_police("hCaptcha verification failed. Please try again.")
     
     #create new leo user
-    user = PoliceUser(
+    g.user = PoliceUser(
         email=email,
         pw_hash=werkzeug.security.generate_password_hash(request.form.get("password")),
         created_utc=g.time,
@@ -319,64 +318,61 @@ def post_signup_police():
         ban_reason="You are not affiliated with a law enforcement agency." if banned_domain else None
     )
 
-    g.db.add(user)
+    g.db.add(g.user)
     g.db.commit()
 
     session["utype"]='p'
-    session["uid"]=user.id
+    session["uid"]=g.user.id
 
     return redirect("/set_otp")
 
 @app.get("/verify_email")
 @logged_in_any
-def get_verify_email(user):
+def get_verify_email():
 
     if not request.args.get("token"):
 
         return render_template(
-            "confirm_email.html",
-            user=user
+            "confirm_email.html"
             )
 
     t=int(request.args.get('t'))
     if g.time - t > 60 * 60 *24:
         return render_template(
             "confirm_email.html",
-            user=user,
             expired=True
             )
     
-    if not validate_hash(f"verify_email+{user.type_id}+{user.email}+{t}", request.args.get('token','')):
+    if not validate_hash(f"verify_email+{g.user.type_id}+{g.user.email}+{t}", request.args.get('token','')):
         return render_template(
             "confirm_email.html",
-            user=user,
             invalid=True
             )
 
     #(re)confirmation successful
-    user.last_verified_utc=g.time
-    g.db.add(user)
+    g.user.last_verified_utc=g.time
+    g.db.add(g.user)
     g.db.commit()
     return redirect("/")
 
 @app.post("/verify_email")
 @logged_in_any
-def post_verify_email(user):
+def post_verify_email():
 
-    if user.last_verified_utc:
+    if g.user.last_verified_utc:
         subject="Reconfirm your email"
     else:
         subject="Confirm your email"
 
-    token=generate_hash(f"verify_email+{user.type_id}+{user.email}+{g.time}")
+    token=generate_hash(f"verify_email+{g.user.type_id}+{g.user.email}+{g.time}")
 
     send_email(
-        user,
+        g.user,
         "police_reconfirm",
         subject=subject,
         link_text="Confirm Email",
         link_url=f"/verify_email?t={g.time}&token={token}"
         )
     
-    return render_template("check_your_email.html", user=user)
+    return render_template("check_your_email.html")
 

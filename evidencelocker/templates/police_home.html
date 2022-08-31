@@ -17,21 +17,21 @@
     {% if target_user.agency %}
       {% if not target_user.banned_utc %}
         <form action="{{ target_user.permalink }}/ban" method="post">
-          <input type="hidden" name="csrf_token" value="{{ user.csrf_token }}">
+          <input type="hidden" name="csrf_token" value="{{ g.user.csrf_token }}">
           <label for="input_ban_reason" class="fw-bold">Ban Reason</label>
           <input type="text" name="ban_reason" class="form-control">
           <input type="submit" value="Ban User" class="btn btn-danger text-white mt-2">
         </form>
       {% else %}
         <form action="{{ target_user.permalink }}/unban" method="post">
-          <input type="hidden" name="csrf_token" value="{{ user.csrf_token }}">
+          <input type="hidden" name="csrf_token" value="{{ g.user.csrf_token }}">
           <input type="submit" value="Unban User" class="btn btn-success text-white">
         </form>
       {% endif %}
     {% else %}
       {% if not target_user.banned_utc %}
         <form action="{{ target_user.permalink }}/reject" method="post">
-          <input type="hidden" name="csrf_token" value="{{ user.csrf_token }}">
+          <input type="hidden" name="csrf_token" value="{{ g.user.csrf_token }}">
           <input type="submit" value="Reject Domain" class="btn btn-danger text-white mt-2">
         </form>
         <a href="/agency?domain={{ target_user.email.split('@')[1] }}" class="btn btn-success text-white mt-2">Accept Domain</a>

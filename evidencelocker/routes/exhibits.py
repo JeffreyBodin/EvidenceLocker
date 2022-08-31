@@ -1,9 +1,10 @@
 import bleach
 import mistletoe
 import pyotp
-from pprint import pprint
+from pprint import pprint, pformat
 from io import BytesIO
 import magic
+import mistletoe
 
 from evidencelocker.decorators.auth import *
 from evidencelocker.helpers.text import raw_to_html, bleachify
@@ -14,27 +15,35 @@ from evidencelocker.__main__ import app
 
 @app.get("/create_exhibit")
 @logged_in_victim
-def get_create_exhibit(user):
+def get_create_exhibit():
 
     return render_template(
         "create_exhibit.html",
-        user=user
         )
 
 @app.post("/create_exhibit")
 @logged_in_victim
-def post_create_exhibit(user):
+def post_create_exhibit():
 
     title = bleachify(request.form.get("title"))
 
-    body_raw = request.form.get("body")
+    body_raw = request.form.get("body").replace('\r', '')
 
     body_html = raw_to_html(body_raw)
 
     signed = request.form.get("oath_perjury", False)
 
+    #check for duplicates
+
+    if existing := g.db.query(Exhibit).filter_by(
+        author_id=g.user.id,
+        title=title,
+        body_html=body_html).first()
+    
+        return redirect(existing.permalink)
+
     if signed:
-        if not user.validate_password(request.form.get("password")) or not user.validate_otp(request.form.get("otp_code")):
+        if not g.user.validate_password(request.form.get("password")) or not g.user.validate_otp(request.form.get("otp_code")):
             return render_template(
                 "create_exhibit.html",
                 error="Invalid signature",
@@ -47,7 +56,7 @@ def post_create_exhibit(user):
         text_html=body_html,
         title=title,
         created_utc=g.time,
-        author_id=user.id,
+        author_id=g.user.id,
         created_country = request.headers.get("cf-ipcountry"),
         created_ip  = request.remote_addr
         )
@@ -66,7 +75,6 @@ def post_create_exhibit(user):
         if not mime.startswith("image/"):
             return render_template(
                 "create_exhibit.html",
-                user=user,
                 error="Invalid file type, must be image",
                 title=title,
                 body=body_raw
@@ -97,11 +105,11 @@ def post_create_exhibit(user):
 @app.get("/locker/<username>/exhibit/<eid>/<anything>")
 @app.get("/locker/<username>/exhibit/<eid>/<anything>.json")
 @logged_in_any
-def get_locker_username_exhibit_eid_anything(user, username, eid, anything):
+def get_locker_username_exhibit_eid_anything(username, eid, anything):
 
     exhibit = get_exhibit_by_id(eid)
 
-    if not exhibit.author.can_be_viewed_by_user(user):
+    if not exhibit.author.can_be_viewed_by_user(g.user):
         abort(404)
 
     if username != exhibit.author.username:
@@ -116,39 +124,36 @@ def get_locker_username_exhibit_eid_anything(user, username, eid, anything):
     return render_template(
         "exhibit_page.html",
         e=exhibit,
-        user=user
         )
 
-@app.get("/locker/<username>/exhibit/<eid>/<anything>/signature")
-@logged_in_desired
-def get_locker_username_exhibit_eid_anything_signature(user, username, eid, anything):
-
+@app.delete("/locker/<username>/exhibit/<eid>/<anything>")
+@logged_in_victim
+@validate_csrf_token
+def delete_locker_username_exhibit_eid_anything(username, eid, anything):
     exhibit = get_exhibit_by_id(eid)
 
-    if not exhibit.author.can_be_viewed_by_user(user):
+    if exhibit.author != g.user:
         abort(404)
 
     if username != exhibit.author.username:
         abort(404)
 
-    if request.path != exhibit.sig_permalink:
-        return redirect(exhibit.sig_permalink)
+    if exhibit.signed_utc:
+        return jsonify({"error":"Cannot delete signed content"}), 403
 
-    if not exhibit.signed_utc:
-        return redirect(exhibit.permalink)
+    if exhibit.image_sha256:
+        s3_delete_file(exhibit.pic_permalink)
 
-    return render_template(
-        "exhibit_sig.html",
-        e=exhibit,
-        user=user
-        )
+    g.db.delete(exhibit)
+    g.db.commit()
+    return jsonify({"redirect":f"/locker/{g.user.username}"}), 302
 
 @app.get("/locker/<username>/exhibits")
 @logged_in_victim
-def get_locker_username_all_signed_exhibits(user, username):
+def get_locker_username_all_signed_exhibits(username):
 
     target_user = get_victim_by_username(username)
-    if user != target_user:
+    if g.user != target_user:
         abort(404)
 
     exhibits=[e for e in target_user.exhibits if e.signed_utc]
@@ -162,12 +167,11 @@ def get_locker_username_all_signed_exhibits(user, username):
         target_user=target_user,
         exhibits=exhibits,
         verification_link=verification_link,
-        user=user
         )
 
 @app.get("/locker/<username>/exhibits/<exhibit_ids>")
 @logged_in_desired
-def get_locker_username_exhibit_verification(user, username, exhibit_ids):
+def get_locker_username_exhibit_verification(username, exhibit_ids):
 
     target_user=get_victim_by_username(username)
 
@@ -184,42 +188,20 @@ def get_locker_username_exhibit_verification(user, username, exhibit_ids):
         "exhibits_all.html",
         target_user=target_user,
         exhibits=exhibits,
-        user=user
         )
 
-@app.get("/edit_exhibit/<eid>")
+
+@app.post("/locker/<username>/exhibit/<eid>/<anything>")
 @logged_in_victim
-def get_edit_exhibit_eid(user, eid):
+def post_locker_username_exhibit_eid_anything(username, eid, anything):
 
     exhibit = get_exhibit_by_id(eid)
 
-    if exhibit.author != user:
-        abort(404)
-
-    if exhibit.signed_utc:
-        return redirect(exhibit.permalink)
-
-    return render_template(
-        "create_exhibit.html",
-        user=user,
-        e=exhibit
-        )
-
-@app.post("/edit_exhibit/<eid>")
-@logged_in_victim
-def post_edit_exhibit_eid(user, eid):
-
-    exhibit = get_exhibit_by_id(eid)
-
-    if exhibit.author != user:
+    if exhibit.author != g.user:
         abort(404)
 
     if exhibit.signed_utc:
         abort(403)
-
-
-
-
 
     title = bleachify(request.form.get("title"))
 
@@ -242,7 +224,6 @@ def post_edit_exhibit_eid(user, eid):
         if not mime.startswith("image/"):
             return render_template(
                 "create_exhibit.html",
-                user=user,
                 error="Invalid file type, must be image",
                 e=exhibit
                 )
@@ -264,10 +245,9 @@ def post_edit_exhibit_eid(user, eid):
     signed = request.form.get("oath_perjury", False)
 
     if signed:
-        if not user.validate_password(request.form.get("password")) or not user.validate_otp(request.form.get("otp_code")):
+        if not g.user.validate_password(request.form.get("password")) or not g.user.validate_otp(request.form.get("otp_code")):
             return render_template(
                 "create_exhibit.html",
-                user=user,
                 error="Invalid signature",
                 e=exhibit
                 )
@@ -294,11 +274,11 @@ def post_edit_exhibit_eid(user, eid):
 
 @app.get("/exhibit_image/<eid>/<digits>.<filetype>")
 @logged_in_desired
-def get_exhibit_image_eid_png(user, eid, digits, filetype):
+def get_exhibit_image_eid_png(eid, digits, filetype):
 
     exhibit = get_exhibit_by_id(eid)
 
-    if not exhibit.author.can_be_viewed_by_user(user):
+    if not exhibit.author.can_be_viewed_by_user(g.user):
         abort(404)
 
     if not exhibit.image_sha256:
@@ -314,3 +294,37 @@ def get_exhibit_image_eid_png(user, eid, digits, filetype):
         s3_download_file(exhibit.pic_permalink),
         mimetype=f"image/{exhibit.image_type}"
         )
+
+@app.get("/locker/<username>/exhibit/<eid>/<anything>/signature")
+@logged_in_desired
+def get_locker_username_exhibit_eid_anything_signature(username, eid, anything):
+
+    exhibit = get_exhibit_by_id(eid)
+
+    if not exhibit.author.can_be_viewed_by_user(g.user):
+        return jsonify({"error": "Exhibit not found"}), 404
+
+    if username != exhibit.author.username:
+        return jsonify({"error": "Exhibit not found"}), 404
+
+    if request.path != exhibit.sig_permalink:
+        return redirect(exhibit.sig_permalink)
+
+    if not exhibit.signed_utc:
+        return jsonify({"error":"Exhibit is not signed"}), 400
+
+    data={
+        "json_for_sig": escape(pformat(exhibit.json_for_sig)),
+        "live_sha256_with_fresh_image_hash": exhibit.live_sha256_with_fresh_image_hash,
+        "signing_sha256": exhibit.signing_sha256,
+        "signed_string": exhibit.signed_string,
+        "sig_valid": exhibit.sig_valid_with_fresh_image,
+        "title": exhibit.title
+        }
+
+    if exhibit.image_sha256:
+        data.update({
+            "pic_permalink": exhibit.pic_permalink
+            })
+
+    return jsonify(data)

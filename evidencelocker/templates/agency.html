@@ -11,10 +11,10 @@
     {% endif %}
   </div>
   <div class="card-footer">
-    {% if user and user.type_id.startswith('v') and not shared %}
+    {% if g.user and g.user.type_id.startswith('v') and not shared %}
     <form method="post" action="{{ request.path }}/share">
       <p class="h4">Share Locker</p>
-      <input type="hidden" name="csrf_token" value="{{ user.csrf_token }}">
+      <input type="hidden" name="csrf_token" value="{{ g.user.csrf_token }}">
 
       <label for="pw_input" class="mt-3">Password</label>
       <input id="pw_input" class="form-control" type="password" name="password">

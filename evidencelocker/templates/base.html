@@ -5,9 +5,9 @@
 
     <!--Bootstrap-->
     {% if session.get('darkmode') %}
-      <link id="mainstyle" href="/assets/style/dark.css" rel="stylesheet">
+      <link id="mainstyle" href="/assets/style/dark.css?v=1.0.31" rel="stylesheet">
     {% else %}
-      <link id="mainstyle" href="/assets/style/light.css" rel="stylesheet">
+      <link id="mainstyle" href="/assets/style/light.css?v=1.0.31" rel="stylesheet">
     {% endif %}
     
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,10 +15,10 @@
     <!--FontAwesome-->
     <link href="/assets/fontawesome/css/all.min.css" rel="stylesheet">
 
-    {% if user %}
+    {% if g.user %}
     <script nonce="{{ g.time | nonce }}">
       function csrftoken(){
-        return '{{ user.csrf_token }}'
+        return '{{ g.user.csrf_token }}'
       }
     </script>
     {% else %}
@@ -46,19 +46,19 @@
               <li class="nav-item">
                 <a class="nav-link" href="/help/faq">FAQ</a>
               </li>
-              {% if user %}
-              {% if user.type_id.startswith('v') %}
+              {% if g.user %}
+              {% if g.user.type_id.startswith('v') %}
               <li class="nav-item">
                 <a class="nav-link" href="/create_exhibit">Create Exhibit</a>
               </li>
-              {% elif user.type_id.startswith('a') %}
+              {% elif g.user.type_id.startswith('a') %}
               <li class="nav-item">
                 <a class="nav-link" href="/admin_dashboard">Admin Dashboard</a>
               </li>
               {% endif %}
               <li class="nav-item">
                 <form action="/logout" method="post">
-                  <input type="hidden" name="csrf_token" value="{{ user.csrf_token }}">
+                  <input type="hidden" name="csrf_token" value="{{ g.user.csrf_token }}">
                   <input class="nav-link border-0 bg-transparent" type="submit" value="Log Out">
                 </form>
               </li>
@@ -85,8 +85,8 @@
               {% endif %}
             </ul>
           </div>
-          <div id="dark-mode-toggle" class="ms-auto" role="button">
-            <i class="fas fa-circle-half-stroke"></i>
+          <div class="ms-auto">
+            <a class="btn btn-white border border-rounded" role="button" id="dark-mode-toggle"><i class="fas fa-circle-half-stroke"></i></a>
           </div>
         </div>
       </div>
@@ -134,9 +134,12 @@
       </div>
     </div>
     
+    {% block modal %}
+    {% endblock %}
+
     <!--JQuery, Bootstrap, and Popper JS -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
 
     <!--Clipboard -->
     <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.10/dist/clipboard.min.js" importance="high"></script>
@@ -161,6 +164,6 @@
     </script>
 
     <!--Site js -->
-    <script src="/assets/js/site.js"></script>
+    <script src="/assets/js/site.js?v=1.0.31"></script>
   </body>
 </html>

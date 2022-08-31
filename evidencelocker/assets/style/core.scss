@@ -45,3 +45,9 @@ $small-font-size: 12px;
 .avoid-pagebreak {
     page-break-inside: avoid;
 }
+
+//invert colors on dark mode hover
+#dark-mode-toggle:hover {
+    background: $black;
+    color: $white;
+}

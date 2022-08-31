@@ -8,11 +8,11 @@ from evidencelocker.__main__ import app
 @app.get("/locker/<username>")
 @app.get("/locker/<username>.json")
 @logged_in_any
-def get_locker_username(user, username):
+def get_locker_username(username):
 
     target_user = get_victim_by_username(username)
 
-    if not target_user.can_be_viewed_by_user(user):
+    if not target_user.can_be_viewed_by_user(g.user):
         abort(404)
 
     if request.path.endswith('.json'):
@@ -20,18 +20,17 @@ def get_locker_username(user, username):
 
     return render_template(
         "victim_userpage.html",
-        user=user,
         target_user=target_user
         )
 
 @app.get("/locker")
 @logged_in_police
-def get_lockers_leo(user):
+def get_lockers_leo():
 
-    if user.agency.country_code in RESTRICTED_COUNTRIES:
+    if g.user.agency.country_code in RESTRICTED_COUNTRIES:
         victims = g.db.query(VictimUser).filter(
             VictimUser.id.in_(
-                    g.db.query(LockerShare.victim_id).filter(LockerShare.agency_id==user.agency_id).subquery()
+                    g.db.query(LockerShare.victim_id).filter(LockerShare.agency_id==g.user.agency_id).subquery()
                 )
             ).all()
 
@@ -40,17 +39,16 @@ def get_lockers_leo(user):
         victims = g.db.query(VictimUser).filter(
             or_(
                 and_(
-                    VictimUser.country_code==user.agency.country_code,
+                    VictimUser.country_code==g.user.agency.country_code,
                     VictimUser.allow_leo_sharing==True
                     ),
                 VictimUser.id.in_(
-                    g.db.query(LockerShare.victim_id).filter(LockerShare.agency_id==user.agency_id).subquery()
+                    g.db.query(LockerShare.victim_id).filter(LockerShare.agency_id==g.user.agency_id).subquery()
                     )
                 )
             ).all()
 
     return render_template(
         "police_home.html",
-        user=user,
         listing=victims
         )

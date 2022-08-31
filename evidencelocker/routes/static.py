@@ -7,31 +7,29 @@ from evidencelocker.__main__ import app
 
 @app.get('/')
 @logged_in_desired
-def home(user):
-    if user and user.type_id.startswith('v'):
-        return redirect(user.permalink)
+def home():
+    if g.user and g.user.type_id.startswith('v'):
+        return redirect(g.user.permalink)
 
-    elif user and user.type_id.startswith('p'):
+    elif g.user and g.user.type_id.startswith('p'):
         return redirect("/locker")
 
-    #elif user and user.type_id.startswith('a'):
+    #elif g.user and g.user.type_id.startswith('a'):
     #    return redirect("/admin_dashboard")
 
     blogs=g.db.query(BlogPost).order_by(BlogPost.id.desc()).limit(3)
 
     return render_template(
         "home.html",
-        user=user,
         blogs=blogs
         )
 
 @app.get("/help/<pagename>")
 @logged_in_desired
-def help(user, pagename):
+def help(pagename):
     
     return render_template(
-        safe_join("/help", pagename)+'.html',
-        user=user
+        safe_join("/help", pagename)+'.html'
         )
 
 @app.get("/assets/style/<stylefile>.css")

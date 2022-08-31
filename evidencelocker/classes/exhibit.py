@@ -59,11 +59,6 @@ class Exhibit(Base, b36ids, time_mixin, json_mixin):
         return f"/locker/{self.author.username}/exhibit/{self.b36id}/{output}"
 
     @property
-    @lazy
-    def sig_permalink(self):
-        return f"{self.permalink}/signature"
-
-    @property
     def pic_permalink(self):
         image_type = self.image_type or "png"
         return f"/exhibit_image/{self.b36id}/{self.image_sha256[-6:]}.{image_type}"
@@ -95,6 +90,9 @@ class Exhibit(Base, b36ids, time_mixin, json_mixin):
             data.pop("image_sha256")
         if not data["image_type"]:
             data.pop("image_type")
+
+        if data["created_utc"]>1661882400:
+            data["author_username"] = self.author.username
 
         return data
 
@@ -134,6 +132,7 @@ class Exhibit(Base, b36ids, time_mixin, json_mixin):
     def sig_valid_with_fresh_image(self):
         return self.signing_sha256==self.live_sha256_with_fresh_image_hash
 
-
-
-    
+    @property
+    @lazy
+    def sig_permalink(self):
+        return f"{self.permalink}/signature"

@@ -12,21 +12,20 @@ from evidencelocker.__main__ import app
 
 @app.get("/admin_dashboard")
 @logged_in_admin
-def admin_dashboard(user):
+def admin_dashboard():
 
     police_count = g.db.query(PoliceUser).filter_by(agency_id=None, banned_utc=0).count()
 
     return render_template(
         "admin/home.html",
-        police_count=police_count,
-        user=user
+        police_count=police_count
         )
 
 @app.get("/login_admin")
 @logged_in_desired
-def get_login_admin(user):
+def get_login_admin():
 
-    if user:
+    if g.user:
         return redirect("/")
 
     return render_template(
@@ -67,7 +66,7 @@ def post_login_admin():
 @app.post("/locker/<username>/unban")
 @logged_in_admin
 @validate_csrf_token
-def locker_username_ban_x(user, username):
+def locker_username_ban_x(username):
 
 	target_user=get_victim_by_username(username)
 
@@ -85,20 +84,19 @@ def locker_username_ban_x(user, username):
 @app.get("/agency")
 @app.get("/agency/<aid>/<anything>/edit")
 @logged_in_admin
-def get_agency(user, aid=None, anything=None):
+def get_agency(aid=None, anything=None):
 
     agency= get_agency_by_id(aid) if aid else None
 
     return render_template(
         "admin/edit_agency.html",
-        a=agency,
-        user=user
+        a=agency
         )
 
 @app.post("/agency")
 @logged_in_admin
 @validate_csrf_token
-def post_agency(user):
+def post_agency():
 
     #create agency
 
@@ -130,7 +128,7 @@ def post_agency(user):
 @app.post("/agency/<aid>/<anything>")
 @logged_in_admin
 @validate_csrf_token
-def post_agency_aid_anything(user, aid, anything):
+def post_agency_aid_anything(aid, anything):
 
     #edit agency
 
@@ -150,19 +148,18 @@ def post_agency_aid_anything(user, aid, anything):
 
 @app.get("/users/police/unverified")
 @logged_in_admin
-def users_police_unverified(user):
+def users_police_unverified():
 
     listing = g.db.query(PoliceUser).filter_by(agency_id=None, banned_utc=0).all()
 
     return render_template(
         "admin/police.html",
-        user=user,
         listing=listing
         )
 
 @app.get("/users/victims")
 @logged_in_admin
-def users_victims(user):
+def users_victims():
 
     page=max(1, int(request.args.get("page",1)))
 
@@ -170,7 +167,6 @@ def users_victims(user):
 
     return render_template(
         "admin/victims.html",
-        user=user,
         listing=listing,
         page=page
         )
@@ -178,7 +174,7 @@ def users_victims(user):
 
 @app.get("/police/<pid>")
 @logged_in_admin
-def get_police_pid_admin(user, pid):
+def get_police_pid_admin(pid):
 
     police=get_police_by_id(pid)
 
@@ -196,7 +192,6 @@ def get_police_pid_admin(user, pid):
 
     return render_template(
         "police_home.html",
-        user=user,
         listing=victims,
         target_user=police
         )
@@ -205,7 +200,7 @@ def get_police_pid_admin(user, pid):
 @app.post("/police/<pid>/unban")
 @logged_in_admin
 @validate_csrf_token
-def police_pid_ban_unban(user, pid):
+def police_pid_ban_unban(pid):
 
     target_user=get_police_by_id(pid)
 
@@ -223,7 +218,7 @@ def police_pid_ban_unban(user, pid):
 @app.post("/police/<pid>/reject")
 @logged_in_admin
 @validate_csrf_token
-def reject_domain(user, pid):
+def reject_domain(pid):
 
     target_user=get_police_by_id(pid)
 
