@@ -5,6 +5,7 @@ from pprint import pprint, pformat
 from io import BytesIO
 import magic
 import mistletoe
+import pprint
 
 from evidencelocker.decorators.auth import *
 from evidencelocker.helpers.text import raw_to_html, bleachify
@@ -219,7 +220,10 @@ def post_locker_username_exhibit_eid_anything(username, eid, anything):
         exhibit.signed_country = request.headers.get("cf-ipcountry") if signed else None
 
         exhibit.clear_cache("live_sha256")
+        pprint(exhibit.json_for_sig)
         exhibit.signing_sha256 = exhibit.live_sha256 if signed else None
+
+
 
         print(f"new saved sig: {exhibit.signing_sha256}")
         print(f"new live sig:  {exhibit.live_sha256}")
