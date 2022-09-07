@@ -9,7 +9,7 @@ $("#oathcheck").change(function(){
   if ($('#oathcheck').prop('checked')){
     txt='Sign and Save'
   }
-  $('#savebutton').prop('value', txt)
+  $('#savebutton').text(txt)
 });
 
 
@@ -92,8 +92,7 @@ function post_form_toast(form_id) {
 }
 
 //attach post_form_toast to form "submit" buttons
-$('.toast-form-submit').click(function(e){
-  e.preventDefault();
+$('.toast-form-submit').click(function(){
   post_form_toast($(this).data('form'));
 })
 
