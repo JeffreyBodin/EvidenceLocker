@@ -16,6 +16,8 @@
     {% if e.author==g.user and not e.signed_utc %}
       <a class="btn btn-primary text-white" data-bs-toggle="modal" data-bs-target="#editModal" role="button">Edit</a>
       <a class="btn btn-danger text-white" data-bs-toggle="modal" data-bs-target="#deleteModal" role="button">Delete</a>
+    {% elif e.author==g.user and e.signed_utc and not e.sig_valid %}
+      <a class="btn btn-primary text-white" data-bs-toggle="modal" data-bs-target="#signModal" role="button">Re-Sign</a>
     {% endif %}
   </div>
 </div>
@@ -57,6 +59,10 @@
     <div class="d-lg-none">
       <a class="btn btn-primary text-white" data-bs-toggle="modal" data-bs-target="#editModal" role="button">Edit</a>
       <a class="btn btn-danger text-white" data-bs-toggle="modal" data-bs-target="#deleteModal" role="button">Delete</a>
+    </div>
+    {% elif e.author==g.user and e.signed_utc and not e.sig_valid %}
+    <div class="d-lg-none">
+      <a class="btn btn-primary text-white" data-bs-toggle="modal" data-bs-target="#signModal" role="button">Re-Sign</a>
     </div>
     {% endif %}
 
@@ -154,7 +160,7 @@
           {% endif %}
 
           <label for="input-body" class="mt-3 fw-bold">Text</label>
-          <textarea id="input-body" name="body" class="form-control w-100" rows="5">{{ e.text_raw }}</textarea>
+          <textarea id="input-body" name="body" class="form-control w-100" rows="5" disabled>{{ e.text_raw }}</textarea>
 
           <div class="custom-control custom-checkbox mt-4 d-flex">
             <input type="checkbox" class="custom-control-input m-1" id="oathcheck" name="oath_perjury" value="true">
