@@ -12,7 +12,7 @@ from evidencelocker.decorators.lazy import lazy
 from evidencelocker.__main__ import Base
 
 
-class Exhibit(Base, b36ids, time_mixin, json_mixin):
+class Exhibit(Base, b36ids, time_mixin, json_mixin, lazy_mixin):
 
     __tablename__="entries"
 

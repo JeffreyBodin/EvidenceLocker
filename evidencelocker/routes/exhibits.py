@@ -214,6 +214,8 @@ def post_locker_username_exhibit_eid_anything(username, eid, anything):
         exhibit.signed_utc = g.time if signed else exhibit.signed_utc
         exhibit.signed_ip = request.remote_addr if signed else None
         exhibit.signed_country = request.headers.get("cf-ipcountry") if signed else None
+
+        exhibit.clear_cache("live_sha256")
         exhibit.signing_sha256 = exhibit.live_sha256 if signed else None
 
         g.db.add(exhibit)

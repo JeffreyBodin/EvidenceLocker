@@ -128,3 +128,14 @@ class country_mixin():
     @property
     def country(self):
         return COUNTRY_CODES.get(self.country_code.upper())
+
+class lazy_mixin():
+
+    def clear_cache(self, *args):
+
+        if not args:
+            self._lazy={}
+            return
+
+        for arg in args:
+            self._lazy.pop(arg, None)
