@@ -70,7 +70,7 @@ class user_mixin():
             return False
             
         totp=pyotp.TOTP(self.otp_secret)
-        if totp.verify(x):
+        if totp.verify(x, valid_window=1):
             self.last_otp_code=x
             g.db.add(self)
             g.db.commit()
