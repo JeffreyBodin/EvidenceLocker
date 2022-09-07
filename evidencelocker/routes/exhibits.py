@@ -201,8 +201,25 @@ def post_locker_username_exhibit_eid_anything(username, eid, anything):
     if exhibit.author != g.user:
         abort(404)
 
-    if exhibit.signed_utc:
+    #Exhibits with invalid signatures may be re-signed
+    if exhibit.signed_utc and exhibit.sig_valid:
         abort(403)
+
+    elif exhibit.signed_utc and not exhibit.sig_valid:
+
+        signed = request.form.get("oath_perjury", False)
+        if not g.user.validate_password(request.form.get("password")) or not g.user.validate_otp(request.form.get("otp_code")):
+            return jsonify({"error":"Invalid signature"}), 400
+            
+        exhibit.signed_utc = g.time if signed else exhibit.signed_utc
+        exhibit.signed_ip = request.remote_addr if signed else None
+        exhibit.signed_country = request.headers.get("cf-ipcountry") if signed else None
+        exhibit.signing_sha256 = exhibit.live_sha256 if signed else None
+
+        g.db.add(exhibit)
+        g.db.commit()
+
+    return jsonify({"redirect":exhibit.permalink}), 302
 
     title = bleachify(request.form.get("title"))
 
@@ -223,11 +240,8 @@ def post_locker_username_exhibit_eid_anything(username, eid, anything):
         #check file type
         mime = magic.from_buffer(file.read(2048), mime=True)
         if not mime.startswith("image/"):
-            return render_template(
-                "create_exhibit.html",
-                error="Invalid file type, must be image",
-                e=exhibit
-                )
+            return jsonify({"error":"Invalid file type, must be image"}), 400
+
         exhibit.image_type=mime.split(";")[0].split('/')[1].split('+')[0]
 
         file.seek(0)
@@ -247,11 +261,7 @@ def post_locker_username_exhibit_eid_anything(username, eid, anything):
 
     if signed:
         if not g.user.validate_password(request.form.get("password")) or not g.user.validate_otp(request.form.get("otp_code")):
-            return render_template(
-                "create_exhibit.html",
-                error="Invalid signature",
-                e=exhibit
-                )
+            return jsonify({"error":"Invalid signature"}), 400
 
     edited = (body_raw != exhibit.text_raw) or (title != exhibit.title) or (image_action != None)
 
@@ -270,7 +280,7 @@ def post_locker_username_exhibit_eid_anything(username, eid, anything):
     g.db.add(exhibit)
     g.db.commit()
 
-    return redirect(exhibit.permalink)
+    return jsonify({"redirect":exhibit.permalink}), 302
 
 
 @app.get("/exhibit_image/<eid>/<digits>.<filetype>")

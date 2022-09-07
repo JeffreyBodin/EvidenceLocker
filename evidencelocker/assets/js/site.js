@@ -92,7 +92,8 @@ function post_form_toast(form_id) {
 }
 
 //attach post_form_toast to form "submit" buttons
-$('.toast-form-submit').click(function(){
+$('.toast-form-submit').click(function(e){
+  e.preventDefault();
   post_form_toast($(this).data('form'));
 })
 
@@ -146,6 +147,11 @@ $("#img-toggle-button").click(function(){
 //Auto-expanding textarea
 
 $("textarea").on("input", function () {
+  this.style.height = "auto";
+  this.style.height = (this.scrollHeight+3) + "px";
+});
+
+$("textarea").on("click", function () {
   this.style.height = "auto";
   this.style.height = (this.scrollHeight+3) + "px";
 });
