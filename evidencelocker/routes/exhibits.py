@@ -211,12 +211,18 @@ def post_locker_username_exhibit_eid_anything(username, eid, anything):
         if not g.user.validate_password(request.form.get("password")) or not g.user.validate_otp(request.form.get("otp_code")):
             return jsonify({"error":"Invalid signature"}), 400
 
+        print(f"old saved sig: {exhibit.signing_sha256}")
+        print(f"old live sig:  {exhibit.live_sha256}")
+
         exhibit.signed_utc = g.time if signed else exhibit.signed_utc
         exhibit.signed_ip = request.remote_addr if signed else None
         exhibit.signed_country = request.headers.get("cf-ipcountry") if signed else None
 
         exhibit.clear_cache("live_sha256")
         exhibit.signing_sha256 = exhibit.live_sha256 if signed else None
+
+        print(f"new saved sig: {exhibit.signing_sha256}")
+        print(f"new live sig:  {exhibit.live_sha256}")
 
         g.db.add(exhibit)
         g.db.commit()
