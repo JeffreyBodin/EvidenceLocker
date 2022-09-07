@@ -5,7 +5,7 @@ from pprint import pprint, pformat
 from io import BytesIO
 import magic
 import mistletoe
-import pprint
+from pprint import pprint
 
 from evidencelocker.decorators.auth import *
 from evidencelocker.helpers.text import raw_to_html, bleachify
