@@ -91,7 +91,7 @@ class Exhibit(Base, b36ids, time_mixin, json_mixin):
         if not data["image_type"]:
             data.pop("image_type")
 
-        if max(data['signed_utc'], data["created_utc"])>1661882400:
+        if data["created_utc"]>1661882400:
             data["author_username"] = self.author.username
 
         return data
@@ -119,7 +119,7 @@ class Exhibit(Base, b36ids, time_mixin, json_mixin):
         if data.get("image_sha256"):
             data["image_sha256"]=self.fresh_image_hash
 
-        return hashlib.new('sha256', json.dumps(self.json_for_sig, sort_keys=True).encode('utf-8'), usedforsecurity=True).hexdigest()
+        return hashlib.new('sha256', json.dumps(data, sort_keys=True).encode('utf-8'), usedforsecurity=True).hexdigest()
 
     @property
     @lazy
