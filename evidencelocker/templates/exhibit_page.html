@@ -50,7 +50,7 @@
 
     {% if e.signed_utc %}
     <p>I swear, under penalty of perjury, that to the best of my current knowledge, the foregoing statement is true.</p>
-    <p><a data-bs-toggle="modal" data-bs-target="#sigModal" role="button" data-url="{{ e.sig_permalink }}" class="sig-btn btn btn-success text-white {% if e.sig_valid %}btn-success{% else %}btn-danger{% endif %}"><i class="fas fa-fw {% if e.sig_valid %}fa-signature-lock{% else %}fa-signature-slash{% endif %}"></i> <span class="text-small">{{ e.signed_string }}</span></a></p>
+    <p><a data-bs-toggle="modal" data-bs-target="#sigModal" role="button" data-url="{{ e.sig_permalink }}" class="sig-btn btn btn-success text-white {% if e.sig_valid %}btn-success{% else %}btn-danger{% endif %}"><i class="fas fa-fw {% if e.sig_valid %}fa-signature-lock{% else %}fa-signature-slash{% endif %}"></i> <span class="text-small">{{ e.author.username }} | {{ e.signed_string }}</span></a></p>
     {% else %}
     <p><i class="fas fa-fw fa-signature text-black"></i> Not signed</p>
     {% endif %}
