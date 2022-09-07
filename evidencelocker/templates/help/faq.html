@@ -38,13 +38,15 @@
 
      * <i class="fas fa-signature-lock text-success"></i> - Indicates a successfully re-validated digital signature. The Exhibit has not changed since it was signed.
 
-     * <i class="fas fa-signature-slash text-danger"></i> - Indicates a digital signature that could not be re-validated. The Exhibit may or may not have changed since it was signed. This symbol does not mean that the statement is false, or that the author is perjuring themselves, or that the statement should be excluded from evidence. It *only* means that the signature itself is broken. Law enforcement should request that the author re-sign their statement in another format.
+     * <i class="fas fa-signature-slash text-danger"></i> - Indicates a digital signature that could not be re-validated. The Exhibit may or may not have changed since it was signed. This symbol does not mean that the statement is false, or that the author is perjuring themselves, or that the statement should be excluded from evidence. It *only* means that the signature itself is broken. Law enforcement should request that the author simply re-sign their statement.
 
      * <i class="fas fa-signature text-black"></i> - There is no signature present. The exhibit has not been signed and may still be edited.''',
   "Can I change my username?":"""
     No. Your username is part of the Exhibit data that is used in your digital signatures. Changing your username would invalidate all of your existing digital signatures.""",
-  "Why does the timestamp look wrong?":"""
-    Timestamps are displayed in UTC or \"Zulu\" time, and adjusted slightly for readability. UTC time is a standardized time format that does not take time zones or daylight savings into consideration. This ensures that there is only one possible way to interpret any particular timestamp displayed on this site.""",
+  "Why are all timestamps in UTC?":"""
+    UTC time is a standardized clock that does not take time zones or daylight savings into consideration.
+
+    In police investigations, a precise timeline of events is often necessary. Because your clock may change (due to travel and/or seasons) differently than the clock of others involved in your case, timestamps displayed in local time may lead to confusion. Recording and displaying all timestamps in UTC time ensures that there is only ever *one* possible correct way to interpret the timestamp.""",
   "Who owns and runs The Evidence Locker?":"""
     A man in the United States who goes by the username of \"CodeForge\". He would prefer to remain anonymous for now. [More info](/help/about)"""
   }
