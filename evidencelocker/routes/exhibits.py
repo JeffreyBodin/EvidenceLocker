@@ -215,8 +215,8 @@ def post_locker_username_exhibit_eid_anything(username, eid, anything):
         exhibit.signed_ip = request.remote_addr if signed else None
         exhibit.signed_country = request.headers.get("cf-ipcountry") if signed else None
 
-        exhibit.clear_cache("live_sha256")
-        exhibit.signing_sha256 = exhibit.live_sha256 if signed else None
+        exhibit.clear_cache("live_sha256", "live_sha256_with_fresh_image_hash", "fresh_image_hash")
+        exhibit.signing_sha256 = exhibit.live_sha256_with_fresh_image_hash if signed else None
 
         g.db.add(exhibit)
         g.db.commit()
