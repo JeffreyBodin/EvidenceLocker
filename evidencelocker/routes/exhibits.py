@@ -221,7 +221,7 @@ def post_locker_username_exhibit_eid_anything(username, eid, anything):
 
         print("current lazy cache")
         pprint(exhibit._lazy)
-        print(f"popping old live: {exhibit._lazy.pop('live_sha256', None)}")
+        print(f"popping old live: {exhibit.clear_cache('live_sha256')}")
         exhibit.signing_sha256 = exhibit.live_sha256 if signed else None
 
 

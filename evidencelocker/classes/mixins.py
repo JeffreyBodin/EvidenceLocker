@@ -136,4 +136,4 @@ class lazy_mixin():
             return
 
         for arg in args:
-            self._lazy.pop(arg, None)
+            self._lazy={x:self._lazy[x] for x in self._lazy if not x.startswith(f"{arg}_")}
