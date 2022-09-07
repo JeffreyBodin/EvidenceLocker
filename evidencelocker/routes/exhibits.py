@@ -219,7 +219,7 @@ def post_locker_username_exhibit_eid_anything(username, eid, anything):
         exhibit.signed_ip = request.remote_addr if signed else None
         exhibit.signed_country = request.headers.get("cf-ipcountry") if signed else None
 
-        exhibit._lazy.pop("live_sha256", None)
+        print(f"popping old live: {exhibit._lazy.pop('live_sha256', None)}")
         exhibit.signing_sha256 = exhibit.live_sha256 if signed else None
 
 
