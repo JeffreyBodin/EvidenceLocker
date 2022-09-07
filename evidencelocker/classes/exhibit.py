@@ -91,7 +91,7 @@ class Exhibit(Base, b36ids, time_mixin, json_mixin):
         if not data["image_type"]:
             data.pop("image_type")
 
-        if data["created_utc"]>1661882400:
+        if max(data['signed_utc'], data["created_utc"])>1661882400:
             data["author_username"] = self.author.username
 
         return data
