@@ -92,20 +92,18 @@ class json_mixin():
 
     @property
     def json_core(self):
-        
-        data = {x: self.__dict__[x] for x in self.__dict__}
 
         disallowed_values=[
             'login_nonce',
             'otp_secret',
-            'pw_hash'
-        ]
+            'pw_hash',
+            '_lazy'
+            ]  
+
+        data = {x: self.__dict__[x] for x in self.__dict__ if x not in disallowed_values}
 
         for entry in [x for x in data.keys()]:
             if type(data[entry]) not in [str, int, type(None)]:
-                data.pop(entry)
-
-            if entry in disallowed_values:
                 data.pop(entry)
 
         if "id" in data:
