@@ -210,7 +210,7 @@ def post_locker_username_exhibit_eid_anything(username, eid, anything):
         signed = request.form.get("oath_perjury", False)
         if not g.user.validate_password(request.form.get("password")) or not g.user.validate_otp(request.form.get("otp_code")):
             return jsonify({"error":"Invalid signature"}), 400
-            
+
         exhibit.signed_utc = g.time if signed else exhibit.signed_utc
         exhibit.signed_ip = request.remote_addr if signed else None
         exhibit.signed_country = request.headers.get("cf-ipcountry") if signed else None
@@ -219,7 +219,8 @@ def post_locker_username_exhibit_eid_anything(username, eid, anything):
         g.db.add(exhibit)
         g.db.commit()
 
-    return jsonify({"redirect":exhibit.permalink}), 302
+        return jsonify({"redirect":exhibit.permalink}), 302
+
 
     title = bleachify(request.form.get("title"))
 

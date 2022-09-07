@@ -9,7 +9,7 @@ $("#oathcheck").change(function(){
   if ($('#oathcheck').prop('checked')){
     txt='Sign and Save'
   }
-  $('#savebutton').text(txt)
+  $('.save-btn').text(txt)
 });
 
 
