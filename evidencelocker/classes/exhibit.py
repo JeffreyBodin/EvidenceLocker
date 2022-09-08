@@ -101,6 +101,10 @@ class Exhibit(Base, b36ids, time_mixin, json_mixin, lazy_mixin):
     @property
     @lazy
     def sig_valid(self):
+
+        if not self.rsa_signature:
+            return False
+            
         return rsa.verify(
             json.dumps(self.json_for_sig, sort_keys=True).encode('utf-8'),
             bytes.fromhex(str(self.rsa_signature)),
