@@ -115,13 +115,13 @@ class VictimUser(Base, b36ids, time_mixin, user_mixin, json_mixin, country_mixin
         #This property cannot be accessed unless authenticated as the user
         if g.user != self:
             abort(403)
-            
+
         if not self._rsa_n:
             self.create_keys()
 
         return rsa.PrivateKey(self._rsa_n, self._rsa_e, self._rsa_d, self._rsa_p, self._rsa_q)
     
-    def create_keys:
+    def create_keys(self):
         if self._rsa_n:
             raise RuntimeError(f"User {self} already has keys")
 
