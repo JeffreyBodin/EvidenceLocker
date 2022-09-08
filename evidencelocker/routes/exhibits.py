@@ -6,6 +6,8 @@ from io import BytesIO
 import magic
 import mistletoe
 from pprint import pprint
+import rsa
+import json
 
 from evidencelocker.decorators.auth import *
 from evidencelocker.helpers.text import raw_to_html, bleachify
@@ -216,8 +218,8 @@ def post_locker_username_exhibit_eid_anything(username, eid, anything):
         exhibit.signed_ip = request.remote_addr if signed else None
         exhibit.signed_country = request.headers.get("cf-ipcountry") if signed else None
 
-        exhibit.clear_cache('live_sha256')
-        exhibit.signing_sha256 = exhibit.live_sha256 if signed else None
+        exhibit.clear_cache()
+        exhibit.rsa_signature = rsa.sign(json.dumps(exhibit.json_for_sig, sort_keys=True).encode('utf-8'), "SHA-256", exhibit.author.private_key).hex()
 
         g.db.add(exhibit)
         g.db.commit()
@@ -279,7 +281,8 @@ def post_locker_username_exhibit_eid_anything(username, eid, anything):
     exhibit.text_html = body_html
     exhibit.title = title
 
-    exhibit.signing_sha256 = exhibit.live_sha256 if signed else None
+    exhibit.clear_cache()
+    exhibit.rsa_signature = rsa.sign(json.dumps(exhibit.json_for_sig, sort_keys=True).encode('utf-8'), "SHA-256", exhibit.author.private_key).hex()
 
     g.db.add(exhibit)
     g.db.commit()
