@@ -100,20 +100,10 @@ class Exhibit(Base, b36ids, time_mixin, json_mixin, lazy_mixin):
 
     @property
     @lazy
-    def json_with_fresh_image_hash(self):
-        data=self.json_for_sig
-
-        if data.get("image_sha256"):
-            data["image_sha256"] = hashlib.sha256(s3_download_file(self.pic_permalink).read()).hexdigest()
-
-        return data
-
-    @property
-    @lazy
     def sig_valid(self):
         return rsa.verify(
-            json.dumps(self.json_with_fresh_image_hash, sort_keys=True).encode('utf-8'),
-            bytes.fromhex(self.rsa_signature),
+            json.dumps(self.json_for_sig, sort_keys=True).encode('utf-8'),
+            bytes.fromhex(str(self.rsa_signature)),
             self.public_key)
 
     @property
