@@ -23,6 +23,25 @@ def get_locker_username(username):
         target_user=target_user
         )
 
+@app.get("/locker/<username>/certificate.py")
+@app.get("/locker/<username>/certificate.pem")
+@logged_in_any
+def get_locker_username_certificate(username):
+
+    target_user=get_victim_by_username(username)
+
+    if not target_user.can_be_viewed_by_user(g.user):
+        abort(404)
+
+    if request.path.endswith(".py"):
+        resp = make_response(target_user.public_key)
+    elif request.path.endswith(".pem"):
+        resp = make_response(target_user.public_key.save_pkcs1())
+
+    resp.headers["Content-Type"] = "text/plain"
+
+    return resp
+
 @app.get("/locker")
 @logged_in_police
 def get_lockers_leo():

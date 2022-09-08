@@ -1,6 +1,7 @@
 from sqlalchemy import *
 from sqlalchemy.orm import relationship, lazyload, deferred
 from sqlalchemy.ext.associationproxy import association_proxy
+import rsa
 
 from .mixins import *
 
@@ -99,3 +100,38 @@ class VictimUser(Base, b36ids, time_mixin, user_mixin, json_mixin, country_mixin
         data["exhibits"]=[x.json_core for x in self.exhibits]
 
         return data
+
+    @property
+    def public_key(self):
+
+        if not self._rsa_n:
+            self.create_keys()
+
+        return rsa.PublicKey(self._rsa_n, self._rsa_e)
+
+    @property
+    def private_key(self):
+
+        #This property cannot be accessed unless authenticated as the user
+        if g.user != self:
+            abort(403)
+            
+        if not self._rsa_n:
+            self.create_keys()
+
+        return rsa.PrivateKey(self._rsa_n, self._rsa_e, self._rsa_d, self._rsa_p, self._rsa_q)
+    
+    def create_keys:
+        if self._rsa_n:
+            raise RuntimeError(f"User {self} already has keys")
+
+        pub, priv = rsa.newkeys(512)
+
+        self._rsa_n = priv.n
+        self._rsa_e = priv.e
+        self._rsa_d = priv.d
+        self._rsa_p = priv.p
+        self._rsa_q = priv.q
+
+        g.db.add(self)
+        g.db.commit()
