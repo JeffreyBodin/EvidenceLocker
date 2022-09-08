@@ -104,7 +104,7 @@ class Exhibit(Base, b36ids, time_mixin, json_mixin, lazy_mixin):
 
         if not self.rsa_signature:
             return False
-            
+
         return rsa.verify(
             json.dumps(self.json_for_sig, sort_keys=True).encode('utf-8'),
             bytes.fromhex(str(self.rsa_signature)),
@@ -112,5 +112,10 @@ class Exhibit(Base, b36ids, time_mixin, json_mixin, lazy_mixin):
 
     @property
     @lazy
-    def cert_permalink(self):
-        return f"{self.permalink}/certificate"
+    def pem_cert_permalink(self):
+        return f"{self.permalink}/certificate.pem"
+
+    @property
+    @lazy
+    def py_cert_permalink(self):
+        return f"{self.permalink}/certificate.py"
