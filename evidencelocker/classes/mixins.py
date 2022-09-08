@@ -96,11 +96,10 @@ class json_mixin():
         disallowed_values=[
             'login_nonce',
             'otp_secret',
-            'pw_hash',
-            '_lazy'
+            'pw_hash'
             ]  
 
-        data = {x: self.__dict__[x] for x in self.__dict__ if x not in disallowed_values}
+        data = {x: self.__dict__[x] for x in self.__dict__ if x not in disallowed_values and not x.startswith("_")}
 
         for entry in [x for x in data.keys()]:
             if type(data[entry]) not in [str, int, type(None)]:
