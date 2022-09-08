@@ -144,3 +144,13 @@ class VictimUser(Base, b36ids, time_mixin, user_mixin, json_mixin, country_mixin
 
         g.db.add(self)
         g.db.commit()
+
+    @property
+    @lazy
+    def pem_cert_permalink(self):
+        return f"{self.permalink}/certificate.pem"
+
+    @property
+    @lazy
+    def py_cert_permalink(self):
+        return f"{self.permalink}/certificate.py"

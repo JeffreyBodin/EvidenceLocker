@@ -112,10 +112,5 @@ class Exhibit(Base, b36ids, time_mixin, json_mixin, lazy_mixin):
 
     @property
     @lazy
-    def pem_cert_permalink(self):
-        return f"{self.permalink}/certificate.pem"
-
-    @property
-    @lazy
-    def py_cert_permalink(self):
-        return f"{self.permalink}/certificate.py"
+    def sig_permalink(self):
+        return f"{self.permalink}/signature"
