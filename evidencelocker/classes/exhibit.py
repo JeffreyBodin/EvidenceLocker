@@ -103,8 +103,10 @@ class Exhibit(Base, b36ids, time_mixin, json_mixin, lazy_mixin):
 
         try:
             x=rsa.verify(
-                json.dumps(self.json_for_sig, sort_keys=True).encode('utf-8'),
-                bytes.fromhex(str(self.rsa_signature)),
+                json.dumps(
+                    self.json_for_sig,
+                    sort_keys=True).encode('utf-8'),
+                bytes.fromhex(self.rsa_signature),
                 self.author.public_key)
         except rsa.pkcs1.VerificationError:
             return False
