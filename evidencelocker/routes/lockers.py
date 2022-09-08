@@ -34,7 +34,7 @@ def get_locker_username_certificate(username):
         abort(404)
 
     if request.path.endswith(".py"):
-        resp = make_response(target_user.public_key)
+        resp = make_response(str(target_user.public_key))
     elif request.path.endswith(".pem"):
         resp = make_response(target_user.public_key.save_pkcs1())
 
