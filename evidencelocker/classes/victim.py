@@ -28,11 +28,11 @@ class VictimUser(Base, b36ids, time_mixin, user_mixin, json_mixin, country_mixin
     allow_leo_sharing = Column(Boolean, default=False)
     last_otp_code = deferred(Column(String(6)))
     public_link_nonce=Column(Integer, default=0)
-    _rsa_e=deferred(Column(Integer))
-    _rsa_d=deferred(Column(Integer))
-    _rsa_n=deferred(Column(Integer))
-    _rsa_p=deferred(Column(Integer))
-    _rsa_q=deferred(Column(Integer))
+    _rsa_e=deferred(Column(String(32)))
+    _rsa_d=deferred(Column(String(256)))
+    _rsa_n=deferred(Column(String(256)))
+    _rsa_p=deferred(Column(String(256)))
+    _rsa_q=deferred(Column(String(256)))
 
     share_records = relationship("LockerShare", back_populates="victim")
     agencies = association_proxy('share_records', 'agency')
@@ -107,7 +107,10 @@ class VictimUser(Base, b36ids, time_mixin, user_mixin, json_mixin, country_mixin
         if not self._rsa_n:
             self.create_keys()
 
-        return rsa.PublicKey(self._rsa_n, self._rsa_e)
+        return rsa.PublicKey(
+            int(self._rsa_n, 16),
+            int(self._rsa_e, 16)
+            )
 
     @property
     def private_key(self):
@@ -119,7 +122,13 @@ class VictimUser(Base, b36ids, time_mixin, user_mixin, json_mixin, country_mixin
         if not self._rsa_n:
             self.create_keys()
 
-        return rsa.PrivateKey(self._rsa_n, self._rsa_e, self._rsa_d, self._rsa_p, self._rsa_q)
+        return rsa.PrivateKey(
+            int(self._rsa_n, 16),
+            int(self._rsa_e, 16),
+            int(self._rsa_d, 16),
+            int(self._rsa_p, 16),
+            int(self._rsa_q, 16)
+            )
     
     def create_keys(self):
         if self._rsa_n:
@@ -127,11 +136,11 @@ class VictimUser(Base, b36ids, time_mixin, user_mixin, json_mixin, country_mixin
 
         pub, priv = rsa.newkeys(512)
 
-        self._rsa_n = priv.n
-        self._rsa_e = priv.e
-        self._rsa_d = priv.d
-        self._rsa_p = priv.p
-        self._rsa_q = priv.q
+        self._rsa_n = hex(priv.n)
+        self._rsa_e = hex(priv.e)
+        self._rsa_d = hex(priv.d)
+        self._rsa_p = hex(priv.p)
+        self._rsa_q = hex(priv.q)
 
         g.db.add(self)
         g.db.commit()

@@ -4,6 +4,7 @@ from sqlalchemy import *
 from sqlalchemy.orm import relationship, lazyload
 import re
 import werkzeug.security
+import rsa
 
 from .mixins import *
 from evidencelocker.helpers.aws import s3_download_file
@@ -33,6 +34,7 @@ class Exhibit(Base, b36ids, time_mixin, json_mixin, lazy_mixin):
     signing_sha256 = Column(String(512))
     image_sha256 = Column(String(512), default=None)
     image_type = Column(String(4), default=None)
+    rsa_signature = Column(String(256))
 
     author = relationship("VictimUser", lazy="joined", back_populates="exhibits")
 
@@ -98,41 +100,23 @@ class Exhibit(Base, b36ids, time_mixin, json_mixin, lazy_mixin):
 
     @property
     @lazy
-    def fresh_image_hash(self):
-        if not self.image_sha256:
-            return None
-
-        return hashlib.sha256(s3_download_file(self.pic_permalink).read()).hexdigest()
-    
-    
-    @property
-    @lazy
-    def live_sha256(self):
-
-        return hashlib.new('sha256', json.dumps(self.json_for_sig, sort_keys=True).encode('utf-8'), usedforsecurity=True).hexdigest()
-
-    @property
-    @lazy
-    def live_sha256_with_fresh_image_hash(self):
-
+    def json_with_fresh_image_hash(self):
         data=self.json_for_sig
-        if data.get("image_sha256"):
-            data["image_sha256"]=self.fresh_image_hash
 
-        return hashlib.new('sha256', json.dumps(data, sort_keys=True).encode('utf-8'), usedforsecurity=True).hexdigest()
+        if data.get("image_sha256"):
+            data["image_sha256"] = hashlib.sha256(s3_download_file(self.pic_permalink).read()).hexdigest()
+
+        return data
 
     @property
     @lazy
     def sig_valid(self):
-        return self.signing_sha256==self.live_sha256
-
-
-    @property
-    @lazy
-    def sig_valid_with_fresh_image(self):
-        return self.signing_sha256==self.live_sha256_with_fresh_image_hash
+        return rsa.verify(
+            json.dumps(self.json_with_fresh_image_hash, sort_keys=True).encode('utf-8'),
+            bytes.fromhex(self.rsa_signature),
+            self.public_key)
 
     @property
     @lazy
-    def sig_permalink(self):
-        return f"{self.permalink}/signature"
+    def cert_permalink(self):
+        return f"{self.permalink}/certificate"
