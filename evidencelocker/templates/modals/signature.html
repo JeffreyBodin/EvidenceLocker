@@ -13,11 +13,11 @@
         <pre id="field-json-for-sig" class="bg-dark text-light"></pre>
         <p>The signature may be independantly verified with <code>rsa.verify(data, bytes.fromhex(signature), public_key)</code>, where <code>public_key</code> is the public key corresponding to the user's private key. The user's public key is available in <a href="{{ target_user.py_cert_permalink }}" target="_blank">python</a> and <a href="{{ target_user.pem_cert_permalink }}" target="_blank">pem</a> formats.</p>
         <pre></pre>
-        <p>Exhibit's signature generated from the user's private key and saved at the time of signing (<span id="field-signed-string"></span>):<br><code id="field-signing-rsa"></code></p>
+        <p>Exhibit's signature generated from the user's private key and saved at the time of signing (<span id="field-rsa-signature"></span>):<br><code id="field-signing-rsa"></code></p>
         <p>Does this signature match the live data and the public key?<i id="sig-match-icon" class="fas fa-fw"></i><span id="sig-match-text"></span></p>
       </div>
       <div class="modal-footer">
-        <p id="display-sig-valid"><i class="text-success fas fa-signature-lock"></i> This exhibit has not been altered since it was signed.</p>
+        <p id="display-sig-valid"><i class="text-success fas fa-signature-lock"></i> This exhibit was signed by {{ target_user.username }}, and has not been altered since it was signed.</p>
         <p id="display-sig-invalid" class="d-none"><i class="text-danger fas fa-signature-slash"></i> This exhibit may have been altered since it was signed.</p>
         <button type="button" class="btn btn-primary ms-auto" data-bs-dismiss="modal">Close</button>
       </div>
