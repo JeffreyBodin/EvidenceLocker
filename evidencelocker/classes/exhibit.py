@@ -104,7 +104,7 @@ class Exhibit(Base, b36ids, time_mixin, json_mixin, lazy_mixin):
         return rsa.verify(
             json.dumps(self.json_for_sig, sort_keys=True).encode('utf-8'),
             bytes.fromhex(str(self.rsa_signature)),
-            self.public_key)
+            self.author.public_key)
 
     @property
     @lazy
