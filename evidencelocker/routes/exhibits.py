@@ -128,6 +128,7 @@ def get_locker_username_exhibit_eid_anything(username, eid, anything):
     return render_template(
         "exhibit_page.html",
         e=exhibit,
+        target_user=exhibit.author
         )
 
 @app.delete("/locker/<username>/exhibit/<eid>/<anything>")
