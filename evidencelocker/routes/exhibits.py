@@ -330,8 +330,7 @@ def get_locker_username_exhibit_eid_anything_signature(username, eid, anything):
 
     data={
         "json_for_sig": escape(pformat(exhibit.json_for_sig)),
-        "live_sha256_with_fresh_image_hash": exhibit.live_sha256_with_fresh_image_hash,
-        "signing_sha256": exhibit.signing_sha256,
+        "rsa_signature": exhibit.rsa_signature,
         "signed_string": exhibit.signed_string,
         "sig_valid": exhibit.sig_valid_with_fresh_image,
         "title": exhibit.title

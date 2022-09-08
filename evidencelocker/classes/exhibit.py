@@ -86,15 +86,11 @@ class Exhibit(Base, b36ids, time_mixin, json_mixin, lazy_mixin):
     @property
     def json_for_sig(self):
         data=self.json_core
-        data.pop('signing_sha256')
         
-        if not data["image_sha256"]:
-            data.pop("image_sha256")
-        if not data["image_type"]:
-            data.pop("image_type")
+        data.pop('signing_sha256')
+        data.pop('rsa_signature')
 
-        if data["created_utc"]>1661882400:
-            data["author_username"] = self.author.username
+        data["author_username"] = self.author.username
 
         return data
 
