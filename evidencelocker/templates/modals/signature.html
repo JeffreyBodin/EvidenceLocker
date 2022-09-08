@@ -17,8 +17,8 @@
         <p>Does this signature match the live data and the public key?<i id="sig-match-icon" class="fas fa-fw"></i><span id="sig-match-text"></span></p>
       </div>
       <div class="modal-footer">
-        <p id="display-sig-valid"><i class="text-success fas fa-signature-lock"></i> This exhibit was signed by {{ target_user.username }}, and has not been altered since it was signed.</p>
-        <p id="display-sig-invalid" class="d-none"><i class="text-danger fas fa-signature-slash"></i> This exhibit may have been altered since it was signed.</p>
+        <p id="display-sig-valid" class="me-auto"><i class="text-success fas fa-signature-lock"></i> This exhibit was signed by {{ target_user.username }}, and has not been altered since it was signed.</p>
+        <p id="display-sig-invalid" class="me-auto d-none"><i class="text-danger fas fa-signature-slash"></i> This exhibit may have been altered since it was signed.</p>
         <button type="button" class="btn btn-primary ms-auto" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
