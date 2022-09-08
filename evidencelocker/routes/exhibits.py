@@ -98,10 +98,10 @@ def post_create_exhibit():
         exhibit.signed_ip = request.remote_addr
         exhibit.signed_country  = request.headers.get("cf-ipcountry")
         exhibit.signed_utc=g.time
+        exhibit.rsa_signature = rsa.sign(json.dumps(exhibit.json_for_sig, sort_keys=True).encode('utf-8'), exhibit.author.private_key, "SHA-256").hex()
         g.db.add(exhibit)
         g.db.commit()
         g.db.refresh(exhibit)
-        exhibit.signing_sha256 = exhibit.live_sha256
 
     g.db.commit()
     return redirect(exhibit.permalink)
@@ -220,7 +220,7 @@ def post_locker_username_exhibit_eid_anything(username, eid, anything):
         exhibit.signed_country = request.headers.get("cf-ipcountry") if signed else None
 
         exhibit.clear_cache()
-        exhibit.rsa_signature = rsa.sign(json.dumps(exhibit.json_for_sig, sort_keys=True).encode('utf-8'), "SHA-256", exhibit.author.private_key).hex()
+        exhibit.rsa_signature = rsa.sign(json.dumps(exhibit.json_for_sig, sort_keys=True).encode('utf-8'), exhibit.author.private_key, "SHA-256").hex()
 
         g.db.add(exhibit)
         g.db.commit()
@@ -283,7 +283,7 @@ def post_locker_username_exhibit_eid_anything(username, eid, anything):
     exhibit.title = title
 
     exhibit.clear_cache()
-    exhibit.rsa_signature = rsa.sign(json.dumps(exhibit.json_for_sig, sort_keys=True).encode('utf-8'), "SHA-256", exhibit.author.private_key).hex()
+    exhibit.rsa_signature = rsa.sign(json.dumps(exhibit.json_for_sig, sort_keys=True).encode('utf-8'), exhibit.author.private_key, "SHA-256").hex()
 
     g.db.add(exhibit)
     g.db.commit()
