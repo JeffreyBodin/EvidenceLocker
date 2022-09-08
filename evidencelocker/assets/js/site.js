@@ -177,7 +177,7 @@ $(".sig-btn").on("click", function(){
     if (xhr.status >= 200 && xhr.status < 300) {
       $("#field-json-for-sig").html(data.json_for_sig);
       $("#field-rsa-signature").text(data.rsa_signature);
-      $("#field-live-sha256").text(data.live_sha256_with_fresh_image_hash);
+      $("#field-signed-string").text(data.signed_string)
       $("#field-title").text(data.title)
       if (data.pic_permalink){
         $(".if-image").removeClass("d-none");
