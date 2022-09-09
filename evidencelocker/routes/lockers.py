@@ -25,7 +25,7 @@ def get_locker_username(username):
 
 @app.get("/locker/<username>/certificate.py")
 @app.get("/locker/<username>/certificate.pem")
-@logged_in_any
+@logged_in_desired
 def get_locker_username_certificate(username):
 
     target_user=get_victim_by_username(username)
