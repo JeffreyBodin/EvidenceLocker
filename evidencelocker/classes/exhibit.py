@@ -4,6 +4,7 @@ from sqlalchemy import *
 from sqlalchemy.orm import relationship, lazyload
 import re
 import werkzeug.security
+import rsa
 
 from .mixins import *
 from evidencelocker.helpers.aws import s3_download_file
@@ -33,6 +34,7 @@ class Exhibit(Base, b36ids, time_mixin, json_mixin, lazy_mixin):
     signing_sha256 = Column(String(512))
     image_sha256 = Column(String(512), default=None)
     image_type = Column(String(4), default=None)
+    rsa_signature = Column(String(256))
 
     author = relationship("VictimUser", lazy="joined", back_populates="exhibits")
 
@@ -84,53 +86,33 @@ class Exhibit(Base, b36ids, time_mixin, json_mixin, lazy_mixin):
     @property
     def json_for_sig(self):
         data=self.json_core
-        data.pop('signing_sha256')
-        
-        if not data["image_sha256"]:
-            data.pop("image_sha256")
-        if not data["image_type"]:
-            data.pop("image_type")
 
-        if data["created_utc"]>1661882400:
-            data["author_username"] = self.author.username
+        data.pop('signing_sha256', None)
+        data.pop('rsa_signature', None)
+
+        data["author_username"] = self.author.username
+        data["author_id"]=self.author.b36id
 
         return data
 
     @property
     @lazy
-    def fresh_image_hash(self):
-        if not self.image_sha256:
-            return None
-
-        return hashlib.sha256(s3_download_file(self.pic_permalink).read()).hexdigest()
-    
-    
-    @property
-    @lazy
-    def live_sha256(self):
-
-        return hashlib.new('sha256', json.dumps(self.json_for_sig, sort_keys=True).encode('utf-8'), usedforsecurity=True).hexdigest()
-
-    @property
-    @lazy
-    def live_sha256_with_fresh_image_hash(self):
-
-        data=self.json_for_sig
-        if data.get("image_sha256"):
-            data["image_sha256"]=self.fresh_image_hash
-
-        return hashlib.new('sha256', json.dumps(data, sort_keys=True).encode('utf-8'), usedforsecurity=True).hexdigest()
-
-    @property
-    @lazy
     def sig_valid(self):
-        return self.signing_sha256==self.live_sha256
 
+        if not self.rsa_signature:
+            return False
 
-    @property
-    @lazy
-    def sig_valid_with_fresh_image(self):
-        return self.signing_sha256==self.live_sha256_with_fresh_image_hash
+        try:
+            x=rsa.verify(
+                json.dumps(
+                    self.json_for_sig,
+                    sort_keys=True).encode('utf-8'),
+                bytes.fromhex(self.rsa_signature),
+                self.author.public_key)
+        except rsa.pkcs1.VerificationError:
+            return False
+
+        return True
 
     @property
     @lazy

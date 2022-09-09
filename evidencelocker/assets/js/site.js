@@ -101,11 +101,11 @@ $("#dark-mode-toggle").click(function(){
   post('/toggle_darkmode',
     callback=function(){
       var s = $('#mainstyle')
-      if( s.prop('href').endsWith('light.css?v=1.1.1')){
-        s.prop('href','/assets/style/dark.css?v=1.1.1')
+      if( s.prop('href').endsWith('light.css?v=1.1.3')){
+        s.prop('href','/assets/style/dark.css?v=1.1.3')
       }
       else{
-        s.prop('href','/assets/style/light.css?v=1.1.1')
+        s.prop('href','/assets/style/light.css?v=1.1.3')
       }
     })
 })
@@ -176,9 +176,8 @@ $(".sig-btn").on("click", function(){
     data=JSON.parse(xhr.response);
     if (xhr.status >= 200 && xhr.status < 300) {
       $("#field-json-for-sig").html(data.json_for_sig);
-      $("#field-signed-string").text(data.signed_string);
-      $("#field-signing-sha256").text(data.signing_sha256);
-      $("#field-live-sha256").text(data.live_sha256_with_fresh_image_hash);
+      $("#field-rsa-signature").text(data.rsa_signature);
+      $("#field-signed-string").text(data.signed_string)
       $("#field-title").text(data.title)
       if (data.pic_permalink){
         $(".if-image").removeClass("d-none");

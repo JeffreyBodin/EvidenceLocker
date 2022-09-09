@@ -9,14 +9,15 @@
         </button>
       </div>
       <div class="modal-body">
-        <p>File integrity over time is verified with SHA-256 hashes, calculated using <code>hashlib.new('sha256', json.dumps(data, sort_keys=True).encode('utf-8')).hexdigest()</code>, where <code>data</code> is the following Python dictionary representation of this exhibit:</p>
+        <p>File integrity over time is verified with RSA signatures on SHA-256 hashes, calculated using <code>rsa.sign(json.dumps(data, sort_keys=True).encode('utf-8'), private_key, "SHA-256").hex()</code>, where <code>data</code> is the following Python dictionary representation of this exhibit:</p>
         <pre id="field-json-for-sig" class="bg-dark text-light"></pre>
-        <p>Exhibit's SHA-256 saved at time of signing (<span id="field-signed-string"></span>):<br><code id="field-signing-sha256"></code></p>
-        <p>Exhibit's SHA-256 computed right now from raw live data<span class="if-image d-none"> including <a id="field-pic-permalink" target="_blank">live image</a></span>:<br><code id="field-live-sha256"></code></p>
+        <p>The signature may be independantly verified with <code>rsa.verify(json.dumps(data, sort_keys=True).encode('utf-8'), bytes.fromhex(signature), public_key)</code>, where <code>public_key</code> is the public key corresponding to the user's private key. The user's public key is available in <a href="{% if g.user==target_user %}{{ target_user.py_cert_permalink }}{% else %}{{ target_user.py_cert_permalink | add_token_param(target_user) }}{% endif %}" target="_blank">python</a> and <a href="{% if g.user==target_user %}{{ target_user.pem_cert_permalink }}{% else %}{{ target_user.pem_cert_permalink | add_token_param(target_user) }}{% endif %}" target="_blank">pem</a> formats.</p>
+        <pre></pre>
+        <p>User's signature generated from the user's private key and saved at the time of signing (<span id="field-signed-string"></span>):<br><code id="field-rsa-signature"></code></p>
       </div>
       <div class="modal-footer">
-        <p id="display-sig-valid"><i class="text-success fas fa-signature-lock"></i> This exhibit has not been altered since it was signed.</p>
-        <p id="display-sig-invalid" class="d-none"><i class="text-danger fas fa-signature-slash"></i> This exhibit may have been altered since it was signed.</p>
+        <p id="display-sig-valid" class="me-auto"><i class="text-success fas fa-signature-lock"></i> This exhibit was signed by {{ target_user.username }}, and has not been altered since it was signed.</p>
+        <p id="display-sig-invalid" class="me-auto d-none"><i class="text-danger fas fa-signature-slash"></i> This exhibit may have been altered since it was signed.</p>
         <button type="button" class="btn btn-primary ms-auto" data-bs-dismiss="modal">Close</button>
       </div>
     </div>

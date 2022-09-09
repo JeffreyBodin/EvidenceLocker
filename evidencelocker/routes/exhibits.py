@@ -6,6 +6,8 @@ from io import BytesIO
 import magic
 import mistletoe
 from pprint import pprint
+import rsa
+import json
 
 from evidencelocker.decorators.auth import *
 from evidencelocker.helpers.text import raw_to_html, bleachify
@@ -96,10 +98,11 @@ def post_create_exhibit():
         exhibit.signed_ip = request.remote_addr
         exhibit.signed_country  = request.headers.get("cf-ipcountry")
         exhibit.signed_utc=g.time
+
+        exhibit.rsa_signature = rsa.sign(json.dumps(exhibit.json_for_sig, sort_keys=True).encode('utf-8'), exhibit.author.private_key, "SHA-256").hex()
         g.db.add(exhibit)
         g.db.commit()
         g.db.refresh(exhibit)
-        exhibit.signing_sha256 = exhibit.live_sha256
 
     g.db.commit()
     return redirect(exhibit.permalink)
@@ -126,6 +129,7 @@ def get_locker_username_exhibit_eid_anything(username, eid, anything):
     return render_template(
         "exhibit_page.html",
         e=exhibit,
+        target_user=exhibit.author
         )
 
 @app.delete("/locker/<username>/exhibit/<eid>/<anything>")
@@ -216,8 +220,11 @@ def post_locker_username_exhibit_eid_anything(username, eid, anything):
         exhibit.signed_ip = request.remote_addr if signed else None
         exhibit.signed_country = request.headers.get("cf-ipcountry") if signed else None
 
-        exhibit.clear_cache('live_sha256')
-        exhibit.signing_sha256 = exhibit.live_sha256 if signed else None
+        exhibit.clear_cache()
+        g.db.add(exhibit)
+        g.db.flush()
+        g.db.refresh(exhibit)
+        exhibit.rsa_signature = rsa.sign(json.dumps(exhibit.json_for_sig, sort_keys=True).encode('utf-8'), exhibit.author.private_key, "SHA-256").hex()
 
         g.db.add(exhibit)
         g.db.commit()
@@ -279,7 +286,11 @@ def post_locker_username_exhibit_eid_anything(username, eid, anything):
     exhibit.text_html = body_html
     exhibit.title = title
 
-    exhibit.signing_sha256 = exhibit.live_sha256 if signed else None
+    exhibit.clear_cache()
+    g.db.add(exhibit)
+    g.db.flush()
+    g.db.refresh(exhibit)
+    exhibit.rsa_signature = rsa.sign(json.dumps(exhibit.json_for_sig, sort_keys=True).encode('utf-8'), exhibit.author.private_key, "SHA-256").hex()
 
     g.db.add(exhibit)
     g.db.commit()
@@ -330,10 +341,9 @@ def get_locker_username_exhibit_eid_anything_signature(username, eid, anything):
 
     data={
         "json_for_sig": escape(pformat(exhibit.json_for_sig)),
-        "live_sha256_with_fresh_image_hash": exhibit.live_sha256_with_fresh_image_hash,
-        "signing_sha256": exhibit.signing_sha256,
+        "rsa_signature": exhibit.rsa_signature,
         "signed_string": exhibit.signed_string,
-        "sig_valid": exhibit.sig_valid_with_fresh_image,
+        "sig_valid": exhibit.sig_valid,
         "title": exhibit.title
         }
 
