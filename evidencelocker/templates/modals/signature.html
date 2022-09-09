@@ -11,7 +11,7 @@
       <div class="modal-body">
         <p>File integrity over time is verified with RSA signatures on SHA-256 hashes, calculated using <code>rsa.sign(json.dumps(data, sort_keys=True).encode('utf-8'), private_key, "SHA-256").hex()</code>, where <code>data</code> is the following Python dictionary representation of this exhibit:</p>
         <pre id="field-json-for-sig" class="bg-dark text-light"></pre>
-        <p>The signature may be independantly verified with <code>rsa.verify(json.dumps(data, sort_keys=True).encode('utf-8'), bytes.fromhex(signature), public_key)</code>, where <code>public_key</code> is the public key corresponding to the user's private key. The user's public key is available in <a href="{{ target_user.py_cert_permalink | add add_token_param }}" target="_blank">python</a> and <a href="{{ target_user.pem_cert_permalink | add_token_param }}" target="_blank">pem</a> formats.</p>
+        <p>The signature may be independantly verified with <code>rsa.verify(json.dumps(data, sort_keys=True).encode('utf-8'), bytes.fromhex(signature), public_key)</code>, where <code>public_key</code> is the public key corresponding to the user's private key. The user's public key is available in <a href="{{ target_user.py_cert_permalink | add_token_param }}" target="_blank">python</a> and <a href="{{ target_user.pem_cert_permalink | add_token_param }}" target="_blank">pem</a> formats.</p>
         <pre></pre>
         <p>User's signature generated from the user's private key and saved at the time of signing (<span id="field-signed-string"></span>):<br><code id="field-rsa-signature"></code></p>
       </div>
