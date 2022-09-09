@@ -21,9 +21,9 @@
 
      * <i class="fas fa-signature-lock text-success"></i> - Indicates a successfully re-validated digital signature. The Exhibit was signed by the indicated user, and has not changed since.
 
-     * <i class="fas fa-signature-slash text-danger"></i> - Indicates a digital signature that could not be re-validated. The Exhibit may or may not have changed since it was signed. This symbol should be rarely seen, if ever. Law enforcement should request that the author simply re-sign their statement.
+     * <i class="fas fa-signature-slash text-danger"></i> - Indicates a digital signature that could not be re-validated. The Exhibit may or may not have changed since it was signed. This symbol should be rarely seen, if ever. Law enforcement should request that the author simply re-sign their statement. Exhibits with invalid signatures are still locked, and may not be edited or deleted.
 
-     * <i class="fas fa-signature text-black"></i> - There is no signature present. The exhibit has not been signed and may still be edited.''',
+     * <i class="fas fa-signature text-black"></i> - There is no signature present. The exhibit has not been signed and may still be edited or deleted.''',
   "How strong are TEL's digital signatures?":'''
     TEL generates and issues a 512-bit RSA keypair for all users. The user\'s private key - accessible only to that user via password and two-factor authentication - is used to sign the exhibit, and the public key is used to validate it.
 
