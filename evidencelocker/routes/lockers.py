@@ -43,24 +43,24 @@ def get_locker_username_certificate(username):
     return resp
 
 
-@app.get("/locker/<username>/private.py")
-@app.get("/locker/<username>/private.pem")
-@logged_in_victim
-def get_locker_username_private_certificate(username):
+# @app.get("/locker/<username>/private.py")
+# @app.get("/locker/<username>/private.pem")
+# @logged_in_victim
+# def get_locker_username_private_certificate(username):
 
-    target_user=get_victim_by_username(username)
+#     target_user=get_victim_by_username(username)
 
-    if g.user != target_user:
-        abort(403)
+#     if g.user != target_user:
+#         abort(403)
 
-    if request.path.endswith(".py"):
-        resp = make_response("rsa."+str(target_user.private_key))
-    elif request.path.endswith(".pem"):
-        resp = make_response(target_user.private_key.save_pkcs1())
+#     if request.path.endswith(".py"):
+#         resp = make_response("rsa."+str(target_user.private_key))
+#     elif request.path.endswith(".pem"):
+#         resp = make_response(target_user.private_key.save_pkcs1())
 
-    resp.headers["Content-Type"] = "text/plain"
+#     resp.headers["Content-Type"] = "text/plain"
 
-    return resp
+#     return resp
 
 @app.get("/locker")
 @logged_in_police
