@@ -45,8 +45,6 @@ def path_token(x, user):
 
 @app.template_filter("add_token_param")
 def add_token_param(x, user):
-    if g.user==user:
-        return x
         
     parsed_url=urlparse(x)
     return urlunparse(parsed_url._replace(query=f"token={generate_hash(f'{user.id}+{user.public_link_nonce}+{parsed_url.path}')}"))
