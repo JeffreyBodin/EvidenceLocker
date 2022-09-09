@@ -10,10 +10,10 @@
     * Specific users who have chosen to share their Locker with your particular law enforcement agency
     * Users in your home country who have selected the option "Allow any law enforcement agency in my country to view my Locker". (This only applies if your country is not in our [List of Restricted Countries](/help/restrictedcountries).)
     ''',
-  "Can you authenticate TEL Exhibit records in court?":'
+  "Can you authenticate TEL Exhibit records in court?":'''
     TEL does not provide expert testimony.
 
-    TEL Exhibits are self-authenticating, provided that a <i class="fas fa-signature-lock text-success"></i> icon is present, and should not require testimony to be admissible in court.',
+    TEL Exhibits are self-authenticating, provided that a <i class="fas fa-signature-lock text-success"></i> icon is present, and should not require testimony to be admissible in court.''',
   "Why is two-factor authentication required?":"""
     Two-factor authentication provides an extra type of account security beyond simply remembering a password. This goes a long way in preventing accounts from being stolen, hacked, or shared. Our users store highly sensitive information with us, so we require all Evidence Locker users - including both victims and law enforcement - to use two-factor authentication.""",
   "How do I identify or validate digital signatures on The Evidence Locker?":'''
@@ -24,8 +24,8 @@
      * <i class="fas fa-signature-slash text-danger"></i> - Indicates a digital signature that could not be re-validated. The Exhibit may or may not have changed since it was signed. This symbol should be rarely seen, if ever. Law enforcement should request that the author simply re-sign their statement.
 
      * <i class="fas fa-signature text-black"></i> - There is no signature present. The exhibit has not been signed and may still be edited.''',
-  "How strong are TEL's digital signatures?":'
-    TEL generates and issues a 512-bit RSA keypair for all users. The user's private key - accessible only to that user - is used to sign the exhibit, and the public key is used to validate it.
+  "How strong are TEL's digital signatures?":'''
+    TEL generates and issues a 512-bit RSA keypair for all users. The user's private key - accessible only to that user via password and two-factor authentication - is used to sign the exhibit, and the public key is used to validate it.
 
     TEL digital signatures satisfy the following legal definitions and requirements:
 
@@ -46,7 +46,7 @@
     **European Union**
 
     * "Advanced electronic signature" under eIDAS Article 26, which is admissible under Article 25.
-    ',
+    ''',
   "Why are all timestamps in UTC?":"""
     UTC time is a standardized clock that does not take time zones or daylight savings into consideration.
 
