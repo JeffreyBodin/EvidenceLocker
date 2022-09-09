@@ -91,6 +91,7 @@ class Exhibit(Base, b36ids, time_mixin, json_mixin, lazy_mixin):
         data.pop('rsa_signature', None)
 
         data["author_username"] = self.author.username
+        data["author_id"]=self.author.b36id
 
         return data
 
