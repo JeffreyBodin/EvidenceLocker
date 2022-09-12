@@ -201,7 +201,7 @@ $(".sig-btn").on("click", function(){
 })
 
 //make enter button work after entering 2fa code
-$(".form-control").keyup(function(event) {
+$("#2fa-input").keyup(function(event) {
 
     if (event.keyCode === 13) {
 
