@@ -21,7 +21,7 @@
       {% if request.args.get("error") %}
       <p class="text-danger my-4">{{ request.args.get("error") }}</p>
       {% endif %}
-      <form id="exhibit-create-form" action="{{ request.path }}" method="post" class="m-1" enctype="multipart/form-data" data-submit-button="save-button">
+      <form id="exhibit-create-form" action="{{ request.path }}" method="post" class="m-1" enctype="multipart/form-data" data-submit-button="#save-button">
 
         <input type="hidden" name="csrf_token" value="{{ g.user.csrf_token }}">
 

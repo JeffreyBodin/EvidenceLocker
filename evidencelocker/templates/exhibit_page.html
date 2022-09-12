@@ -83,7 +83,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form id="exhibit-edit-form" action="{{ request.path }}" method="post" enctype="multipart/form-data" data-submit-button="save-button">
+        <form id="exhibit-edit-form" action="{{ request.path }}" method="post" enctype="multipart/form-data" data-submit-button="#save-button">
 
           <input type="hidden" name="csrf_token" value="{{ g.user.csrf_token }}">
 
@@ -167,7 +167,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form id="exhibit-edit-form" action="{{ request.path }}" method="post" enctype="multipart/form-data" data-submit-button="re-sign-button">
+        <form id="exhibit-edit-form" action="{{ request.path }}" method="post" enctype="multipart/form-data" data-submit-button="#re-sign-button">
 
           <input type="hidden" name="csrf_token" value="{{ g.user.csrf_token }}">
 
