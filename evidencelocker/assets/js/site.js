@@ -199,3 +199,10 @@ $(".sig-btn").on("click", function(){
   };
   xhr.send()
 })
+
+//make enter button work after entering 2fa code
+$(".form-control").keyup(function(event) {
+    if (event.keyCode === 13) {
+        $(".save-btn").click();
+    }
+});
