@@ -202,7 +202,16 @@ $(".sig-btn").on("click", function(){
 
 //make enter button work after entering 2fa code
 $(".form-control").keyup(function(event) {
+
     if (event.keyCode === 13) {
-        $(".save-btn").click();
+
+      //navigate up to find parent form
+      x=$(this);
+      while (x.prop('tagName') != "FORM") {
+        x = x.parent();
+      }
+      
+      //use parent form ID to find correct save button
+      $("#" + x.attr('id') + " .save-btn").click();
     }
 });
