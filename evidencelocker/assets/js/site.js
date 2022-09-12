@@ -87,7 +87,6 @@ function post_form_toast(form_id) {
       $('#toast-error .toast-text').text(data['error']);
       $('#toast-error').toast('show')
     }
-    if (data.)
   };
   xhr.send(form);
 }
