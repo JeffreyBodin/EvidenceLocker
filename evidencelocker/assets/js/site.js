@@ -101,11 +101,11 @@ $("#dark-mode-toggle").click(function(){
   post('/toggle_darkmode',
     callback=function(){
       var s = $('#mainstyle')
-      if( s.prop('href').endsWith('light.css?v=1.1.5')){
-        s.prop('href','/assets/style/dark.css?v=1.1.5')
+      if( s.prop('href').endsWith('light.css?v=1.1.6')){
+        s.prop('href','/assets/style/dark.css?v=1.1.6')
       }
       else{
-        s.prop('href','/assets/style/light.css?v=1.1.5')
+        s.prop('href','/assets/style/light.css?v=1.1.6')
       }
     })
 })
