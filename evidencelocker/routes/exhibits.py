@@ -30,12 +30,14 @@ def post_create_exhibit():
 
     title = bleachify(request.form.get("title"))
 
-    body_raw = request.form.get("body").replace('\r', '')
+    body_raw = request.form.get("body").replace('\r', '').lstrip().rstrip()
 
     body_html = raw_to_html(body_raw)
 
-    if not title or not body_raw:
-        return 
+    if not title:
+        return jsonify({"error": "Title is required"})
+    if not body_raw:
+        return jsonify({"error": "Text is required"})
 
     signed = request.form.get("oath_perjury", False)
 
@@ -227,7 +229,7 @@ def post_locker_username_exhibit_eid_anything(username, eid, anything):
 
     title = bleachify(request.form.get("title"))
 
-    body_raw = request.form.get("body").replace('\r', '')
+    body_raw = request.form.get("body").replace('\r', '').lstrip().rstrip()
 
     body_html = raw_to_html(body_raw)
 
