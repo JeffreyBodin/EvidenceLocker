@@ -14,34 +14,13 @@
           <th>Reason</th>
         </tr>
       </thead>
+
+      {% for cc in ( 0 | RCC ) %}
       <tr>
-		    <td>Afghanistan</td>
-        <td>Oppression based on religion and sex</td>
+		    <td>{{ cc | CC }}</td>
+        <td>{{ cc | RCC }}</td>
       </tr>
-      <tr>
-		    <td>China</td>
-        <td>Oppression and genocide based on religion, ethnicity, and political views</td>
-      </tr>
-      <tr>
-		    <td>Iran</td>
-        <td>Oppression based on religion and sex</td>
-      </tr>
-      <tr>
-		    <td>Iraq</td>
-        <td>Oppression based on religion and sex</td>
-      </tr>
-      <tr>
-		    <td>North Korea</td>
-        <td>Oppression based on political views</td>
-      </tr>
-      <tr>
-		    <td>Russia</td>
-        <td>Oppression based on political views</td>
-      </tr>
-      <tr>
-		    <td>Saudi Arabia</td>
-        <td>Oppression based on religion and sex</td>
-      </tr>
+      {% endfor %}
     </table>
   </div>
  </div>

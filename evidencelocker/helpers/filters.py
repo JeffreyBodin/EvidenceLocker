@@ -5,7 +5,7 @@ import pprint
 from urllib.parse import urlparse, urlunparse
 
 from .hashes import *
-from .countries import COUNTRY_CODES
+from .countries import COUNTRY_CODES, RESTRICTED_COUNTRIES
 from evidencelocker.classes import *
 
 from flask import session, g
@@ -62,6 +62,14 @@ def country_code_filter(x):
 
     else:
         return COUNTRY_CODES[x]
+
+@app.template_filter("RCC")
+def restricted_country_code_filter(x):
+    if not x:
+        return RESTRICTED_COUNTRIES
+
+    else:
+        return RESTRICTED_COUNTRIES[x]
 
 @app.template_filter("agency_count")
 def agency_count_filter(x):
