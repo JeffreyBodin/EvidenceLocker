@@ -34,6 +34,9 @@ def post_create_exhibit():
 
     body_html = raw_to_html(body_raw)
 
+    if not title or not body_raw:
+        return 
+
     signed = request.form.get("oath_perjury", False)
 
     #check for duplicates
@@ -43,17 +46,12 @@ def post_create_exhibit():
         title=title,
         text_html=body_html).first()
 
-    if existing:    
-        return redirect(existing.permalink)
+    if existing:
+        return jsonify({"redirect": existing.permalink}), 301
 
     if signed:
         if not g.user.validate_password(request.form.get("password")) or not g.user.validate_otp(request.form.get("otp_code")):
-            return render_template(
-                "create_exhibit.html",
-                error="Invalid signature",
-                title=title,
-                body=body_raw
-                )
+            return jsonify({"error": "Invalid Signature"}), 400
 
     exhibit = Exhibit(
         text_raw=body_raw,
@@ -77,12 +75,7 @@ def post_create_exhibit():
         #check file type
         mime = magic.from_buffer(file.read(2048), mime=True)
         if not mime.startswith("image/"):
-            return render_template(
-                "create_exhibit.html",
-                error="Invalid file type, must be image",
-                title=title,
-                body=body_raw
-                )
+            return jsonify({"error": "Invalid file type; must be image"}), 400
 
         exhibit.image_type=mime.split(";")[0].split('/')[1].split('+')[0]
         
@@ -105,7 +98,7 @@ def post_create_exhibit():
         g.db.refresh(exhibit)
 
     g.db.commit()
-    return redirect(exhibit.permalink)
+    return jsonify({"redirect": exhibit.permalink}), 301
 
 @app.get("/locker/<username>/exhibit/<eid>/<anything>")
 @app.get("/locker/<username>/exhibit/<eid>/<anything>.json")
