@@ -21,7 +21,7 @@
       {% if request.args.get("error") %}
       <p class="text-danger my-4">{{ request.args.get("error") }}</p>
       {% endif %}
-      <form id="exhibit-create-form" action="{{ request.path }}" method="post" class="m-1" enctype="multipart/form-data">
+      <form id="exhibit-create-form" action="{{ request.path }}" method="post" class="m-1" enctype="multipart/form-data" data-submit-button="save-button">
 
         <input type="hidden" name="csrf_token" value="{{ g.user.csrf_token }}">
 
@@ -61,7 +61,7 @@
           <input type="text" class="form-control mb-2 signature-field" id="2fa_input" name="otp_code" placeholder="# # # # # #" disabled>
         </div>
 
-        <button class="btn btn-primary text-white w-100 my-3 toast-form-submit text-white save-btn" data-form="exhibit-create-form">Save</button>
+        <button id="save-button" class="btn btn-primary text-white w-100 my-3 toast-form-submit text-white save-btn" data-form="exhibit-create-form">Save</button>
 
       </form>
     </div>

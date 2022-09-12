@@ -83,7 +83,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form id="exhibit-edit-form" action="{{ request.path }}" method="post" enctype="multipart/form-data">
+        <form id="exhibit-edit-form" action="{{ request.path }}" method="post" enctype="multipart/form-data" data-submit-button="save-button">
 
           <input type="hidden" name="csrf_token" value="{{ g.user.csrf_token }}">
 
@@ -127,7 +127,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button id="savebutton" data-form="exhibit-edit-form" class="btn btn-primary save-btn toast-form-submit text-white">Save Changes</button>
+        <button id="save-button" data-form="exhibit-edit-form" class="btn btn-primary save-btn toast-form-submit text-white">Save Changes</button>
       </div>
     </div>
   </div>
@@ -167,7 +167,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form id="exhibit-edit-form" action="{{ request.path }}" method="post" enctype="multipart/form-data">
+        <form id="exhibit-edit-form" action="{{ request.path }}" method="post" enctype="multipart/form-data" data-submit-button="re-sign-button">
 
           <input type="hidden" name="csrf_token" value="{{ g.user.csrf_token }}">
 
@@ -206,7 +206,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button data-form="exhibit-edit-form" class="btn btn-primary toast-form-submit text-white">Sign</button>
+        <button id="re-sign-button" data-form="exhibit-edit-form" class="btn btn-primary toast-form-submit text-white">Sign</button>
       </div>
     </div>
   </div>

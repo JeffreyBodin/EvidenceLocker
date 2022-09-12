@@ -212,6 +212,6 @@ $(".form-control").keyup(function(event) {
       }
       
       //use parent form ID to find correct save button
-      $("#" + x.attr('id') + " .save-btn").click();
+      $(x.data("submit-button")).click();
     }
 });
