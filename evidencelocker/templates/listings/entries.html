@@ -5,7 +5,7 @@
         <div class="card-title px-3 py-2"><h1 class="h4 text-primary"><a href="{{ e.permalink }}">{{ e.title }}</a></h1></div>
         <div class="card-body py-0">
           <i class="fas fa-fw fa-file-circle-plus" data-toggle="tooltip" data-placement="bottom" title="Exhibit created"></i> <span class="text-small">{{ e.created_string }}</span>
-          {% if e.sig_valid %}
+          {% if e.signed_utc and e.sig_valid %}
             <i class="fas fa-fw fa-signature-lock text-success" data-toggle="tooltip" data-placement="bottom" title="Exhibit signed; signature validated"></i> <span class="text-small">{{ e.signed_string }}</span>
           {% elif e.signed_utc %}
             <i class="fas fa-fw fa-signature-slash text-danger" data-toggle="tooltip" data-placement="bottom" title="Exhibit signed; unable to validate signature"></i> <span class="text-small">{{ e.signed_string }}</span>
