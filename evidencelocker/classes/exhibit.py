@@ -21,19 +21,24 @@ class Exhibit(Base, b36ids, time_mixin, json_mixin, lazy_mixin):
     text_raw    =Column(String(8192))
     text_html   =Column(String(16384))
     title       =Column(String(512))
+
     created_utc =Column(Integer)
     edited_utc  =Column(Integer, default=None)
     signed_utc  =Column(Integer, default=None)
+
     author_id   =Column(Integer, ForeignKey("victim_users.id"))
+
     created_ip  =Column(String(16))
     edited_ip   =Column(String(16))
     signed_ip   =Column(String(16))
+
     created_country=Column(String(2))
     edited_country=Column(String(2))
     signed_country=Column(String(2))
-    signing_sha256 = Column(String(512))
+
     image_sha256 = Column(String(512), default=None)
     image_type = Column(String(4), default=None)
+
     rsa_signature = Column(String(256))
 
     author = relationship("VictimUser", lazy="joined", back_populates="exhibits")

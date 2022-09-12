@@ -61,7 +61,7 @@ def country_code_filter(x):
         return COUNTRY_CODES
 
     else:
-        return COUNTRY_CODES[x]
+        return COUNTRY_CODES.get(x)
 
 @app.template_filter("RCC")
 def restricted_country_code_filter(x):
@@ -69,7 +69,7 @@ def restricted_country_code_filter(x):
         return RESTRICTED_COUNTRIES
 
     else:
-        return RESTRICTED_COUNTRIES[x]
+        return RESTRICTED_COUNTRIES.get(x)
 
 @app.template_filter("agency_count")
 def agency_count_filter(x):

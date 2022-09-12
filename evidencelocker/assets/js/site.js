@@ -87,6 +87,7 @@ function post_form_toast(form_id) {
       $('#toast-error .toast-text').text(data['error']);
       $('#toast-error').toast('show')
     }
+    if (data.)
   };
   xhr.send(form);
 }
@@ -211,7 +212,7 @@ $("#2fa_input").keyup(function(event) {
         x = x.parent();
       }
       
-      //use parent form ID to find correct save button
+      //use parent form to find correct save button
       $(x.data("submit-button")).click();
     }
 });
