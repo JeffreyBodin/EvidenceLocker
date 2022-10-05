@@ -15,7 +15,7 @@
     </div>
   {% else %}
     <div class="text-center">No exhibits here yet.</div>
-    {% if target_user==user %}
+    {% if target_user==g.user %}
       <div class="text-center"><a href="/create_exhibit" class="btn btn-primary text-white" role="button">Create Exhibit</a></div>
     {% endif %}
   {% endfor %}
