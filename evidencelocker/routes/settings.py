@@ -26,7 +26,6 @@ def get_settings_page(page):
 
 @app.post("/settings/<page>")
 @logged_in_victim
-@validate_csrf_token
 def post_settings_page(page):
 
     if page=="profile":
