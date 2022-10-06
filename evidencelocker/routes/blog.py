@@ -38,7 +38,6 @@ def get_create_blog():
 
 @app.post("/create_blog")
 @logged_in_admin
-@validate_csrf_token
 def post_blog_admin():
 
     title = bleachify(request.form.get("title"))
@@ -61,7 +60,6 @@ def post_blog_admin():
 
 @app.post("/news/<bid>/<anything>")
 @logged_in_admin
-@validate_csrf_token
 def post_edit_blog_bid(bid, anything):
 
     blog = get_blog_by_id(bid)

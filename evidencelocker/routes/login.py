@@ -171,7 +171,6 @@ def get_set_otp():
 
 @app.post("/set_otp")
 @logged_in_any
-@validate_csrf_token
 def post_set_otp():
     otp_secret = request.form.get("otp_secret")
     code = request.form.get("otp_code")
@@ -184,14 +183,11 @@ def post_set_otp():
     if not totp.verify(code):
         return redirect('/set_otp?error=Incorrect%20code')
 
-
-
     g.user.otp_secret=otp_secret
     g.db.add(g.user)
     g.db.commit()
 
     return redirect("/")
-
 
 
 @app.post("/signup")

@@ -2,6 +2,32 @@ from flask import *
 
 from evidencelocker.helpers.loaders import *
 
+
+#this isn't a wrapper; it's just called by them
+def validate_csrf_token():
+
+    if request.method not in ["POST", "PUT", "PATCH", "DELETE"]:
+        return
+
+    submitted_key = request.values.get("csrf_token", "none")
+
+    #logged in users
+    if g.user and not g.user.validate_csrf_token(submitted_key):
+            abort(401)
+
+    else:
+        #logged out users
+        t=int(request.values.get("time", 0))
+
+        if g.time-t > 3600:
+            abort(401)
+
+        if not validate_hash(f"{t}+{session['session_id']}", token):
+            abort(401)
+
+
+
+
 def logged_in_victim(f):
 
     def wrapper(*args, **kwargs):
@@ -23,7 +49,9 @@ def logged_in_victim(f):
 
         if g.user.banned_utc:
             return render_template('banned.html'), 403
-            
+
+        validate_csrf_token()
+
         resp = make_response(f(*args, **kwargs))
         resp.headers['Cache-Control'] = "private"
         return resp
@@ -55,6 +83,8 @@ def logged_in_police(f):
 
         if g.user.banned_utc:
             return render_template('banned.html'), 403
+
+        validate_csrf_token()
         
         resp = make_response(f(*args, **kwargs))
         resp.headers['Cache-Control'] = "private"
@@ -80,6 +110,8 @@ def logged_in_admin(f):
 
         if g.user.banned_utc:
             return render_template('banned.html'), 403
+
+        validate_csrf_token()
 
         resp = make_response(f(*args, **kwargs))
         resp.headers['Cache-Control'] = "private"
@@ -117,6 +149,8 @@ def logged_in_any(f):
         if g.user.banned_utc:
             return render_template('banned.html'), 403
 
+        validate_csrf_token()
+
         resp = make_response(f(*args, **kwargs))
         resp.headers['Cache-Control'] = "private"
         return resp
@@ -149,39 +183,11 @@ def logged_in_desired(f):
         if g.user and g.user.banned_utc:
             return render_template('banned.html'), 403
 
+        validate_csrf_token()
+
         resp = make_response(f(*args, **kwargs))
         resp.headers['Cache-Control'] = "private" if g.user else "public"
         return resp
 
     wrapper.__name__=f.__name__
-    return wrapper
-
-def not_banned(f):
-    """Always use authentication wrapper above this one"""
-    
-    def wrapper(*args, **kwargs):
-        
-        if g.user.is_banned:
-            return render_template("banned.html"), 403
-        
-        return f(*args, **kwargs)
-    
-    wrapper.__name__=f.__name__
-    return wrapper
-
-
-def validate_csrf_token(f):
-    """Always use authentication wrapper above this one"""
-
-    def wrapper(*args, **kwargs):
-
-        submitted_key = request.values.get("csrf_token", "none")
-
-        if not g.user.validate_csrf_token(submitted_key):
-            abort(401)
-
-        return f(*args, **kwargs)
-
-    wrapper.__name__ = f.__name__
-    wrapper.__doc__ = f.__doc__
     return wrapper

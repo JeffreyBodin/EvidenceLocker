@@ -129,7 +129,6 @@ def get_locker_username_exhibit_eid_anything(username, eid, anything):
 
 @app.delete("/locker/<username>/exhibit/<eid>/<anything>")
 @logged_in_victim
-@validate_csrf_token
 def delete_locker_username_exhibit_eid_anything(username, eid, anything):
     exhibit = get_exhibit_by_id(eid)
 

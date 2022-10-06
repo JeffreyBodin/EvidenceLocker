@@ -65,7 +65,6 @@ def post_login_admin():
 @app.post("/locker/<username>/ban")
 @app.post("/locker/<username>/unban")
 @logged_in_admin
-@validate_csrf_token
 def locker_username_ban_x(username):
 
 	target_user=get_victim_by_username(username)
@@ -95,7 +94,6 @@ def get_agency(aid=None, anything=None):
 
 @app.post("/agency")
 @logged_in_admin
-@validate_csrf_token
 def post_agency():
 
     #create agency
@@ -127,7 +125,6 @@ def post_agency():
 
 @app.post("/agency/<aid>/<anything>")
 @logged_in_admin
-@validate_csrf_token
 def post_agency_aid_anything(aid, anything):
 
     #edit agency
@@ -199,7 +196,6 @@ def get_police_pid_admin(pid):
 @app.post("/police/<pid>/ban")
 @app.post("/police/<pid>/unban")
 @logged_in_admin
-@validate_csrf_token
 def police_pid_ban_unban(pid):
 
     target_user=get_police_by_id(pid)
@@ -217,7 +213,6 @@ def police_pid_ban_unban(pid):
 
 @app.post("/police/<pid>/reject")
 @logged_in_admin
-@validate_csrf_token
 def reject_domain(pid):
 
     target_user=get_police_by_id(pid)
