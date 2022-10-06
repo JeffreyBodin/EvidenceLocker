@@ -32,14 +32,14 @@
   </div>
   <div class="card-body">
     {% if not target_user.banned_utc %}
-      <form action="{{ target_user.permalink }}/ban">
+      <form action="{{ target_user.permalink }}/ban" method="post">
         <input type="hidden" name="csrf_token" value="{{ g.user.csrf_token }}">
         <label for="input_ban_reason" class="fw-bold">Ban Reason</label>
         <input type="text" name="ban_reason" class="form-control">
         <input type="submit" value="Ban User" class="btn btn-danger text-white mt-2">
       </form>
     {% else %}
-      <form action="{{ target_user.permalink }}/unban">
+      <form action="{{ target_user.permalink }}/unban" method="post">
         <input type="hidden" name="csrf_token" value="{{ g.user.csrf_token }}">
         <input type="submit" value="Unban User" class="btn btn-success text-white">
       </form>
