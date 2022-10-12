@@ -12,7 +12,11 @@
     <p><i class="fas fa-fw fa-signature" data-toggle="tooltip" data-placement="bottom" title="Signed Exhibits"></i> <span class="text-small">{{ target_user.signed_exhibit_count }}</span></p>
     <p><i class="fas fa-fw fa-pen" data-toggle="tooltip" data-placement="bottom" title="Draft Exhibits"></i> <span class="text-small">{{ target_user.draft_exhibit_count }}</span></p>
     {% if target_user==g.user %}
-      <p><span class="text-small"><a href="{{ target_user.permalink }}/exhibits" target="_blank">Export or Print Locker</a></span></p>
+      <p class="text-small">Share or print Locker:</p>
+      <ul>
+        <li><a href="{{ g.user.permalink }}/exhibits" target="_blank">Current exhibits only</a></li>
+        <li><a href="{{ g.user.permalink }}/exhibits/all" target="_blank">All exhibits including future</a></li>
+      </ul>
       <a class="btn btn-primary text-white" role="button" href="/settings/profile">Settings</a>
     {% endif %}
   </div>
@@ -44,33 +48,6 @@
         <input type="submit" value="Unban User" class="btn btn-success text-white">
       </form>
     {% endif %}
-  </div>
-</div>
-{% endblock %}
-
-{% block modal %}
-<!--Signature modal-->
-<div class="modal fade" id="sigModal" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="field-title"></h5>
-        <button type="button" class="close border-0 bg-transparent" data-bs-dismiss="modal" aria-label="Close">
-          <span class="text-black" aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p>File integrity over time is verified with SHA-256 hashes, calculated using <code>hashlib.new('sha256', json.dumps(data, sort_keys=True).encode('utf-8')).hexdigest()</code>, where <code>data</code> is the following Python dictionary representation of this exhibit:</p>
-        <pre id="field-json-for-sig" class="bg-dark text-light"></pre>
-        <p>Exhibit's SHA-256 saved at time of signing (<span id="field-signed-string"></span>):<br><code id="field-signing-sha256"></code></p>
-        <p>Exhibit's SHA-256 computed right now from raw live data<span class="if-image d-none"> including <a id="field-pic-permalink" target="_blank">live image</a></span>:<br><code id="field-live-sha256"></code></p>
-      </div>
-      <div class="modal-footer">
-        <p id="display-sig-valid"><i class="text-success fas fa-signature-lock"></i> This exhibit has not been altered since it was signed.</p>
-        <p id="display-sig-invalid" class="d-none"><i class="text-danger fas fa-signature-slash"></i> This exhibit may have been altered since it was signed.</p>
-        <button type="button" class="btn btn-primary ms-auto" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
   </div>
 </div>
 {% endblock %}
