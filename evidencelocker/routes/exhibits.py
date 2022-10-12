@@ -158,6 +158,7 @@ def get_locker_username_all_signed_exhibits(username):
         abort(404)
 
     exhibits=[e for e in g.user.exhibits if e.signed_utc]
+    exhibits.sort(key=lambda x:x.id)
 
     exhibit_ids=','.join([e.b36id for e in exhibits])
 
