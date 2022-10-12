@@ -152,10 +152,12 @@ def delete_locker_username_exhibit_eid_anything(username, eid, anything):
 @logged_in_victim
 def get_locker_username_all_signed_exhibits(username):
 
-    if username.lower() != g.user.username.lower():
+    target_user=get_victim_by_username(username)
+
+    if g.user != target_user:
         abort(404)
 
-    exhibits=[e for e in target_user.exhibits if e.signed_utc]
+    exhibits=[e for e in g.user.exhibits if e.signed_utc]
 
     exhibit_ids=','.join([e.b36id for e in exhibits])
 
@@ -163,7 +165,7 @@ def get_locker_username_all_signed_exhibits(username):
 
     return render_template(
         "exhibits_all.html",
-        target_user=target_user,
+        target_user=g.user,
         exhibits=exhibits,
         verification_link=verification_link,
         )
