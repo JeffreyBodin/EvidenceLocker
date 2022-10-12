@@ -189,7 +189,7 @@ def get_locker_username_exhibit_verification(username, exhibit_ids):
         exhibits.sort(key=lambda x:x.id)
 
     if any([e.author_id != target_user.id for e in exhibits]):
-        abort(403)
+        abort(404)
 
     return render_template(
         "exhibits_all.html",
