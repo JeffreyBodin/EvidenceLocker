@@ -152,8 +152,7 @@ def delete_locker_username_exhibit_eid_anything(username, eid, anything):
 @logged_in_victim
 def get_locker_username_all_signed_exhibits(username):
 
-    target_user = get_victim_by_username(username)
-    if g.user != target_user:
+    if username.lower() != g.user.username.lower():
         abort(404)
 
     exhibits=[e for e in target_user.exhibits if e.signed_utc]
@@ -175,17 +174,16 @@ def get_locker_username_exhibit_verification(username, exhibit_ids):
 
     target_user=get_victim_by_username(username)
 
-    if not validate_hash(f"{target_user.id}+{target_user.public_link_nonce}+{request.path}", request.args.get("token",'')):
+    if g.user!=target_user and not validate_hash(f"{target_user.id}+{target_user.public_link_nonce}+{request.path}", request.args.get("token",'')):
         abort(404)
     
     if exhibit_ids=="all":
-        exhibits = g.db.query(Exhibit).filter(
-            Exhibit.author_id==target_user.id,
-            Exhibit.signed_utc != None
-            ).order_by(Exhibit.id.asc()).all()
+        exhibits = [e for e in target_user.exhibits if e.signed_utc]
+        exhibits.sort(key=lambda x:x.id)
     else:
         exhibit_ids=exhibit_ids.split(",")
         exhibits=get_exhibits_by_ids(exhibit_ids)
+        exhibits.sort(key=lambda x:x.id)
 
     if any([e.author_id != target_user.id for e in exhibits]):
         abort(403)
@@ -194,6 +192,7 @@ def get_locker_username_exhibit_verification(username, exhibit_ids):
         "exhibits_all.html",
         target_user=target_user,
         exhibits=exhibits,
+        verification_link=request.path
         )
 
 

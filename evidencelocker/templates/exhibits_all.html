@@ -49,9 +49,9 @@
 <div class="border-top mt-5 text-center">
   <p><i>End of Signed Locker Content</i></p>
 
-  {% if verification_link and g.user==target_user%}
+  {% if verification_link %}
   <div class="avoid-pagebreak">
-    <p>The following is a public share link for this page with this exact set of exhibits, including images and signature data. Public links may be revoked at any time in your settings.</p>
+    <p>The following is a public share link for this page{% if not request.path.endswith("/all") %} with this exact set of exhibits{% endif %}, including images and signature data. Public links may be revoked at any time in your settings.</p>
 
     <img class="mw-100 mx-auto avoid-pagebreak" src="{{ verification_link | full_link | add_token_param(g.user) | qrcode_img_data }}">
     <div class="d-flex w-75 mx-auto">
