@@ -4,7 +4,7 @@
 
 {% block pagecontent %}
 <h1>{{ target_user.username }}'s Locker</h1>
-<h2 class="h3">{{ target_user.name }}</h2>
+{% if target_user.name %}<h2 class="h3">{{ target_user.name }}</h2>{% endif %}
 {% for e in exhibits %}
 <div id="exhibit-{{ e.b36id }}" class="card border rounded mb-3 avoid-pagebreak">
   <div class="card-header">

@@ -6,9 +6,9 @@
         <div class="card-body py-0">
           <i class="fas fa-fw fa-file-circle-plus" data-toggle="tooltip" data-placement="bottom" title="Exhibit created"></i> <span class="text-small">{{ e.created_string }}</span>
           {% if e.signed_utc and e.sig_valid %}
-            <i class="fas fa-fw fa-signature-lock text-success" data-toggle="tooltip" data-placement="bottom" title="Exhibit signed; signature validated"></i> <span class="text-small">{{ e.signed_string }}</span>
+            <i class="fas fa-fw fa-signature-lock text-success" data-toggle="tooltip" data-placement="bottom" title="Exhibit signed; signature validated"></i> <span class="text-small">{{ e.author.username }} | {{ e.signed_string }}</span>
           {% elif e.signed_utc %}
-            <i class="fas fa-fw fa-signature-slash text-danger" data-toggle="tooltip" data-placement="bottom" title="Exhibit signed; unable to validate signature"></i> <span class="text-small">{{ e.signed_string }}</span>
+            <i class="fas fa-fw fa-signature-slash text-danger" data-toggle="tooltip" data-placement="bottom" title="Exhibit signed; unable to validate signature"></i> <span class="text-small">{{ e.author.username }} | {{ e.signed_string }}</span>
           {% endif %}
         </div>
       </div>
