@@ -107,7 +107,7 @@ def get_exhibits_by_ids(ids):
         else:
             id_list.append(i)
 
-    exhibits = g.db.query(Exhibit).filter(Exhibit.id.in_(id_list)).order_by(Exhibit.id.desc()).all()
+    exhibits = g.db.query(Exhibit).filter(Exhibit.id.in_(id_list)).order_by(Exhibit.id.asc()).all()
     return exhibits
 
 

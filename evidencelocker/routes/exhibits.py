@@ -178,8 +178,14 @@ def get_locker_username_exhibit_verification(username, exhibit_ids):
     if not validate_hash(f"{target_user.id}+{target_user.public_link_nonce}+{request.path}", request.args.get("token",'')):
         abort(404)
     
-    exhibit_ids=exhibit_ids.split(",")
-    exhibits=get_exhibits_by_ids(exhibit_ids)
+    if exhibit_ids=="all":
+        exhibits = g.db.query(Exhibit).filter(
+            Exhibit.author_id==target_user.id,
+            Exhibit.signed_utc != None
+            ).order_by(Exhibit.id.asc()).all()
+    else:
+        exhibit_ids=exhibit_ids.split(",")
+        exhibits=get_exhibits_by_ids(exhibit_ids)
 
     if any([e.author_id != target_user.id for e in exhibits]):
         abort(403)
