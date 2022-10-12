@@ -51,7 +51,7 @@
 
   {% if verification_link %}
   <div class="avoid-pagebreak">
-    <p>The following is an unguessable public share link for this page{% if request.path.endswith("/all") %}, which will be updated with any new content.{% else %} with this exact set of exhibits.{% endif %}. Images and signature data will be included. Public links may be revoked at any time in your settings.</p>
+    <p>The following is an unguessable public share link for this page{% if request.path.endswith("/all") %}, which will be updated with any new content.{% else %} with this exact set of exhibits.{% endif %} Images and signature data will be included. Public links may be revoked at any time {% if g.user==target_user %}in your settings.{% else %}by the account owner.{% endif %}</p>
 
     <img class="mw-100 mx-auto avoid-pagebreak" src="{{ verification_link | full_link | add_token_param(target_user) | qrcode_img_data }}">
     <div class="d-flex w-75 mx-auto">
