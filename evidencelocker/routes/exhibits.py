@@ -182,14 +182,14 @@ def get_locker_username_exhibit_verification(username, exhibit_ids):
     
     if exhibit_ids=="all":
         exhibits = [e for e in target_user.exhibits if e.signed_utc]
-        exhibits.sort(key=lambda x:x.id)
     else:
         exhibit_ids=exhibit_ids.split(",")
         exhibits=get_exhibits_by_ids(exhibit_ids)
-        exhibits.sort(key=lambda x:x.id)
 
     if any([e.author_id != target_user.id for e in exhibits]):
         abort(404)
+
+    exhibits.sort(key=lambda x:x.id)
 
     return render_template(
         "exhibits_all.html",
