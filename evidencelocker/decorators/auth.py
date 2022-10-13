@@ -13,7 +13,8 @@ def validate_csrf_token():
 
     #logged in users
     if g.user and not g.user.validate_csrf_token(submitted_key):
-            abort(401)
+        print("csrf failed")
+        abort(401)
 
     else:
         #logged out users
