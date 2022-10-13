@@ -14,9 +14,10 @@ def validate_csrf_token():
     submitted_key = request.values.get("csrf_token", "none")
 
     #logged in users
-    if g.user and not g.user.validate_csrf_token(submitted_key):
-        debug('logged in user, failed token')
-        abort(401)
+    if g.user:
+        if not g.user.validate_csrf_token(submitted_key):
+            debug('logged in user, failed token')
+            abort(401)
 
     else:
         #logged out users
