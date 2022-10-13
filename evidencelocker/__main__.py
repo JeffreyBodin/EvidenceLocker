@@ -41,6 +41,8 @@ app.config["S3_BUCKET_NAME"]                = environ.get("S3_BUCKET_NAME")
 app.config["AWS_ACCESS_KEY_ID"]             = environ.get("AWS_ACCESS_KEY_ID")
 app.config["AWS_SECRET_ACCESS_KEY"]         = environ.get("AWS_SECRET_ACCESS_KEY")
 
+app.config["DEBUG"]                         = bool(int(environ.get("DEBUG", 0)))
+
 #===SQLALCHEMY===
 _engine=create_engine(
     app.config['DATABASE_URL'],
@@ -62,6 +64,11 @@ from .helpers.hashes import generate_hash
 #===EXTENSIONS
 
 Markdown(app)
+
+#===DEBUG print function
+def debug(text):
+    if app.config["DEBUG"]:
+        print(text)
 
 #===BEFORE/AFTER REQS===
 

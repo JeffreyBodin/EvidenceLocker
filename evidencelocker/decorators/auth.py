@@ -1,19 +1,21 @@
 from flask import *
 
 from evidencelocker.helpers.loaders import *
+from evidencelocker.helpers.debug import debug
 
 
 #this isn't a wrapper; it's just called by them
 def validate_csrf_token():
 
     if request.method not in ["POST", "PUT", "PATCH", "DELETE"]:
+        debug("req does not need csrf")
         return
 
     submitted_key = request.values.get("csrf_token", "none")
 
     #logged in users
     if g.user and not g.user.validate_csrf_token(submitted_key):
-        print("csrf failed")
+        debug('logged in user, failed token')
         abort(401)
 
     else:
@@ -21,10 +23,14 @@ def validate_csrf_token():
         t=int(request.values.get("time", 0))
 
         if g.time-t > 3600:
+            debug('logged out user, token expired')
             abort(401)
 
         if not validate_hash(f"{t}+{session['session_id']}", token):
+            debug('logged out user, invalid token')
             abort(401)
+
+    debug("successful csrf")
 
 
 
