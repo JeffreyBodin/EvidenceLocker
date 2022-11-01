@@ -49,33 +49,6 @@ def login_victim():
 
     return redirect(user.permalink)
 
-@app.post("/login_police")
-def login_police():
-
-    def invalid_login_police(e):
-        time.sleep(max(0, random.gauss(1.5, 0.33)))
-        return render_template(
-            "login_police.html",
-            token=logged_out_csrf_token(),
-            error=e
-            )
-
-    user = get_police_by_email(request.form.get("email",""), graceful=True)
-    if not user:
-        return invalid_login_police("Invalid username, password, or two-factor code")
-
-    if not user.validate_password(request.form.get("password")):
-        return invalid_login_police("Invalid username, password, or two-factor code")
-
-    if not user.validate_otp(request.form.get("otp_code"), allow_reset=True):
-        return invalid_login_police("Invalid username, password, or two-factor code")
-
-    #set cookie and continue to lockers
-    session["utype"]="p"
-    session["uid"]=user.id
-
-    return redirect("/")
-
 @app.post("/logout")
 def logout():
 
@@ -114,18 +87,6 @@ def get_login_victim():
         token=logged_out_csrf_token()
         )
 
-@app.get("/login_police")
-@logged_in_desired
-def get_login_police():
-
-    if g.user:
-        return redirect("/")
-
-    return render_template(
-        "login_police.html",
-        token=logged_out_csrf_token()
-        )
-
 @app.get("/signup")
 @logged_in_desired
 def get_signup_victim():
@@ -135,19 +96,6 @@ def get_signup_victim():
     
     return render_template(
         "signup_victim.html",
-        token=logged_out_csrf_token(),
-        hcaptcha = app.config["HCAPTCHA_SITEKEY"]
-        )
-
-@app.get("/signup_police")
-@logged_in_desired
-def get_signup_police():
-
-    if g.user:
-        return redirect("/")
-    
-    return render_template(
-        "signup_police.html",
         token=logged_out_csrf_token(),
         hcaptcha = app.config["HCAPTCHA_SITEKEY"]
         )
@@ -249,75 +197,6 @@ def post_signup_victim():
     g.db.commit()
 
     session["utype"]='v'
-    session["uid"]=g.user.id
-
-    return redirect("/set_otp")
-
-
-@app.post("/signup_police")
-def post_signup_police():
-
-    def invalid_signup_police(error=None):
-        return render_template(
-            "signup_police.html",
-            token=logged_out_csrf_token(),
-            hcaptcha = app.config["HCAPTCHA_SITEKEY"],
-            error=error
-            )
-    
-    email=request.form.get("email")
-    existing_user=get_police_by_email(email, graceful=True)
-    if existing_user:
-        return invalid_signup_police("Email address already in use.")
-        
-    if request.form.get("password") != request.form.get("password_confirm"):
-        return invalid_signup_police("Passwords do not match.")
-
-    if request.form.get("terms_agree") != "true":
-        return invalid_signup_police("You must agree to the terms of use.")
-
-    #see if existing agency
-    domain=email.split('@')[1]
-    agency=get_agency_by_domain(domain)
-    if agency:
-        agency_id=agency.id
-    else:
-        agency_id=None
-
-    #verify no banned domain
-    #autoban LEO signups known to not be LEO email
-    banned_domain = get_bad_domain(domain)
-
-    
-    #verify hcaptcha
-    token = request.form.get("h-captcha-response")
-    if not token:
-        abort(400)
-
-    data = {"secret": app.config["HCAPTCHA_SECRET"],
-            "response": token,
-            "sitekey": app.config["HCAPTCHA_SITEKEY"]}
-    url = "https://hcaptcha.com/siteverify"
-
-    x = requests.post(url, data=data)
-
-    if not x.json()["success"]:
-        return invalid_signup_police("hCaptcha verification failed. Please try again.")
-    
-    #create new leo user
-    g.user = PoliceUser(
-        email=email,
-        pw_hash=werkzeug.security.generate_password_hash(request.form.get("password")),
-        created_utc=g.time,
-        agency_id=agency_id,
-        banned_utc=g.time if banned_domain else 0,
-        ban_reason="You are not affiliated with a law enforcement agency." if banned_domain else None
-    )
-
-    g.db.add(g.user)
-    g.db.commit()
-
-    session["utype"]='p'
     session["uid"]=g.user.id
 
     return redirect("/set_otp")
