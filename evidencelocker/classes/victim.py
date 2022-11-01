@@ -34,9 +34,6 @@ class VictimUser(Base, b36ids, time_mixin, user_mixin, json_mixin, country_mixin
     _rsa_p      =deferred(Column(String(256)))
     _rsa_q      =deferred(Column(String(256)))
 
-    share_records = relationship("LockerShare", back_populates="victim")
-    agencies = association_proxy('share_records', 'agency')
-
     exhibits = relationship("Exhibit", order_by="Exhibit.id.desc()", back_populates="author")
 
     def __repr__(self):
