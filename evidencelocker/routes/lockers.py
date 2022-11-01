@@ -61,33 +61,3 @@ def get_locker_username_certificate(username):
 #     resp.headers["Content-Type"] = "text/plain"
 
 #     return resp
-
-@app.get("/locker")
-@logged_in_police
-def get_lockers_leo():
-
-    if g.user.agency.country_code in RESTRICTED_COUNTRIES:
-        victims = g.db.query(VictimUser).filter(
-            VictimUser.id.in_(
-                    g.db.query(LockerShare.victim_id).filter(LockerShare.agency_id==g.user.agency_id).subquery()
-                )
-            ).all()
-
-    else:
-
-        victims = g.db.query(VictimUser).filter(
-            or_(
-                and_(
-                    VictimUser.country_code==g.user.agency.country_code,
-                    VictimUser.allow_leo_sharing==True
-                    ),
-                VictimUser.id.in_(
-                    g.db.query(LockerShare.victim_id).filter(LockerShare.agency_id==g.user.agency_id).subquery()
-                    )
-                )
-            ).all()
-
-    return render_template(
-        "police_home.html",
-        listing=victims
-        )
