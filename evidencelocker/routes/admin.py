@@ -13,12 +13,8 @@ from evidencelocker.__main__ import app
 @app.get("/admin_dashboard")
 @logged_in_admin
 def admin_dashboard():
-
-    police_count = g.db.query(PoliceUser).filter_by(agency_id=None, banned_utc=0).count()
-
     return render_template(
-        "admin/home.html",
-        police_count=police_count
+        "admin/home.html"
         )
 
 @app.get("/login_admin")
