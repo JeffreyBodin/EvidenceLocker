@@ -10,10 +10,10 @@
       <p class="text-danger">This link {{ 'has expired' if expired }}{{ 'is invalid' if invalid }}. Please try again.</p>
       {% endif %}
       <h1 class="h2">Confirm Email</h1>
-      <p>We need to make sure you{% if user.last_verified_utc %} still{% endif %} work for {% if user.agency %}{{ user.agency.name }}{% else %}a law enforcement agency{% endif %}.</p>
+      <p>We need to make sure you{% if g.user.last_verified_utc %} still{% endif %} work for {% if g.user.agency %}{{ g.user.agency.name }}{% else %}a law enforcement agency{% endif %}.</p>
       <form action="/verify_email" method="post">
 
-        <input type="hidden" name="csrf_token" value="{{ user.csrf_token }}">
+        <input type="hidden" name="csrf_token" value="{{ g.user.csrf_token }}">
         <input type="hidden" name="otp_secret" value="{{ otp_secret }}">
 
         <input class="btn btn-primary w-100 mt-3 mx-auto text-white" type="submit" value="Send confirmation email">

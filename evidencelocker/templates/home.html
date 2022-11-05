@@ -1,23 +1,28 @@
 {% extends "base.html" %}
 
+{% block head %}
+<meta property="og:image" content="/assets/images/thumbnail.png">
+<meta property="twitter:image" content="/assets/images/thumbnail.png">
+{% endblock %}
+
 {% block content %}
 <div class="card m-0 border-0">
   <div class="splash-1"></div>
   <div class="card-body">
-    <h1 class="card-title text-primary text-center fw-bold">The Evidence Locker</h1>
-    <h2 class="card-subtitle text-secondary text-center pb-4">Your free resource for documenting abuse</h2>
+    <h1 class="card-title text-center fw-bold">The Evidence Locker</h1>
+    <h2 class="card-subtitle text-primary text-center pb-4">Your free resource for documenting abuse</h2>
     <p class="text-center">Are you a victim of physical, sexual, financial, or emotional abuse?</p>
     <p class="text-center">Avoid gaslighting, lies, and evidence theft. Document your experiences now.</p>
     <p class="text-center"><a href="/signup" class="btn btn-primary text-white">Get Started</a></p>
   </div>
 </div>
 <div class="card m-0 border-0">
-  <h2 class="card-title text-muted text-center fw-bold my-3">How it works</h2>
+  <h2 class="card-title text-center fw-bold my-3">How it works</h2>
   <div class="card-body">
     <div class="d-md-flex justify-content-center">
       <div class="col card border-0 m-0">
         <div class="card-title text-center">
-          <i class="fas fa-fw fa-2x fa-pen"></i>
+          <i class="text-secondary fas fa-fw fa-2x fa-pen"></i>
         </div>
         <div class="card-body">
           <p class="text-center">Tell your story. Create journal entries, and write down events as they happen, while your memory is fresh.</p>
@@ -25,7 +30,7 @@
       </div>
       <div class="col card border-0 m-0">
         <div class="card-title text-center">
-          <i class="fas fa-fw fa-2x fa-signature-lock"></i>
+          <i class="text-secondary fas fa-fw fa-2x fa-signature-lock"></i>
         </div>
         <div class="card-body">
           <p class="text-center">Sign and lock your journal entries. We'll store it in a way that meets testimony evidence requirements.</p>
@@ -33,7 +38,7 @@
       </div>
       <div class="col card border-0 m-0">
         <div class="card-title text-center">
-          <i class="fas fa-fw fa-2x fa-brain"></i>
+          <i class="text-secondary fas fa-fw fa-2x fa-brain"></i>
         </div>
         <div class="card-body">
           <p class="text-center">With your entries locked, you won't need to rely on your memory, and you can protect yourself against gaslighting.</p>
@@ -41,7 +46,7 @@
       </div>
       <div class="col card border-0 m-0">
         <div class="card-title text-center">
-          <i class="fas fa-fw fa-2x fa-user-police-tie"></i>
+          <i class="text-secondary fas fa-fw fa-2x fa-user-police-tie"></i>
         </div>
         <div class="card-body">
           <p class="text-center">If and when you're ready to go to the police, you can simply turn over your entire locker to law enforcement.</p>
@@ -51,20 +56,16 @@
   </div>
 </div>
 <div class="card m-0 border-0 border-top rounded-0">
-  <h2 class="card-title text-center fw-bold my-3"><a class="text-muted" href="/news">News</a></h2>
+  <h2 class="card-title text-center fw-bold my-3">News</h2>
   <div class="card-body row gx-0">
     <div class="col col-md-2 col-lg-3"></div>
     <div class="col col-12 col-md-8 col-lg-6">
       {% with listing=blogs %}
       {% include "listings/blog.html" %}
       {% endwith %}
+      <a class="mt-2" href="/news">More</a>
     </div>
     <div class="col col-md-2 col-lg-3"></div>
-  </div>
-</div>
-<div class="card m-0 border-0">
-  <div class="card-body">
-    <p class="text-small fst-italic text-center">This website is currently under construction in my free time.</p>
   </div>
 </div>
 {% endblock %}

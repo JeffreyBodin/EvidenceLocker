@@ -5,8 +5,6 @@ from os import environ
 import secrets
 import time
 
-import alembic.config
-
 from flask import *
 from flaskext.markdown import Markdown
 
@@ -28,10 +26,6 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_for=2)
 
 #===CONFIGS===
 app.config['DATABASE_URL']                  = environ.get("DATABASE_URL",'').replace("postgres://", "postgresql://")
-if not app.config['DATABASE_URL']:
-    cfg=alembic.config.Config('alembic.ini')
-    app.config['DATABASE_URL']=cfg.get_main_option('sqlalchemy.url')
-    del cfg
 
 app.config["HCAPTCHA_SECRET"]               = environ.get("HCAPTCHA_SECRET")
 app.config["HCAPTCHA_SITEKEY"]              = environ.get("HCAPTCHA_SITEKEY")
@@ -46,6 +40,8 @@ app.config['SESSION_COOKIE_SECURE']         = True
 app.config["S3_BUCKET_NAME"]                = environ.get("S3_BUCKET_NAME")
 app.config["AWS_ACCESS_KEY_ID"]             = environ.get("AWS_ACCESS_KEY_ID")
 app.config["AWS_SECRET_ACCESS_KEY"]         = environ.get("AWS_SECRET_ACCESS_KEY")
+
+app.config["DEBUG"]                         = bool(int(environ.get("DEBUG", 0)))
 
 #===SQLALCHEMY===
 _engine=create_engine(
@@ -69,6 +65,11 @@ from .helpers.hashes import generate_hash
 
 Markdown(app)
 
+#===DEBUG print function
+def debug(text):
+    if app.config["DEBUG"]:
+        print(text)
+
 #===BEFORE/AFTER REQS===
 
 @app.before_request
@@ -88,6 +89,8 @@ def before_request():
     if "session_id" not in session:
         session["session_id"]=secrets.token_hex(16)
 
+    g.user=None
+
 @app.after_request
 def after_request(resp):
 
@@ -104,7 +107,7 @@ def after_request(resp):
     #script nonce
     nonce=generate_hash(f"{session.get('session_id')}+{g.time}")
     
-    resp.headers["Content-Security-Policy"] = f"default-src * data:; script-src 'self' hcaptcha.com code.jquery.com cdn.jsdelivr.net 'nonce-{nonce}'; object-src 'none'; style-src 'self'; media-src 'none';"
+    resp.headers["Content-Security-Policy"] = f"default-src * data:; script-src 'self' hcaptcha.com code.jquery.com cdn.jsdelivr.net 'nonce-{nonce}'; object-src 'none'; style-src 'self' 'unsafe-inline'; media-src 'none';"
     resp.headers["Cross-Origin-Opener-Policy"] = "same-origin"
     resp.headers["Cross-Origin-Resource-Policy"] = "same-origin"
     resp.headers["Permissions-Policy"] = "geolocation=(self)"

@@ -11,7 +11,12 @@
     <p><i class="fas fa-fw fa-user-plus" data-toggle="tooltip" data-placement="bottom" title="Account created"></i> <span class="text-small">{{ target_user.created_string }}</span></p>
     <p><i class="fas fa-fw fa-signature" data-toggle="tooltip" data-placement="bottom" title="Signed Exhibits"></i> <span class="text-small">{{ target_user.signed_exhibit_count }}</span></p>
     <p><i class="fas fa-fw fa-pen" data-toggle="tooltip" data-placement="bottom" title="Draft Exhibits"></i> <span class="text-small">{{ target_user.draft_exhibit_count }}</span></p>
-    {% if target_user==user %}
+    {% if target_user==g.user %}
+      <p class="text-small mb-0">Share or print Locker:</p>
+      <ul class="text-small">
+        <li><a href="{{ g.user.permalink }}/exhibits" target="_blank">Current signed content only</a></li>
+        <li><a href="{{ g.user.permalink }}/exhibits/all" target="_blank">All signed content, including future entries</a></li>
+      </ul>
       <a class="btn btn-primary text-white" role="button" href="/settings/profile">Settings</a>
     {% endif %}
   </div>
@@ -31,15 +36,15 @@
   </div>
   <div class="card-body">
     {% if not target_user.banned_utc %}
-      <form action="{{ target_user.permalink }}/ban">
-        <input type="hidden" name="csrf_token" value="{{ user.csrf_token }}">
+      <form action="{{ target_user.permalink }}/ban" method="post">
+        <input type="hidden" name="csrf_token" value="{{ g.user.csrf_token }}">
         <label for="input_ban_reason" class="fw-bold">Ban Reason</label>
         <input type="text" name="ban_reason" class="form-control">
         <input type="submit" value="Ban User" class="btn btn-danger text-white mt-2">
       </form>
     {% else %}
-      <form action="{{ target_user.permalink }}/unban">
-        <input type="hidden" name="csrf_token" value="{{ user.csrf_token }}">
+      <form action="{{ target_user.permalink }}/unban" method="post">
+        <input type="hidden" name="csrf_token" value="{{ g.user.csrf_token }}">
         <input type="submit" value="Unban User" class="btn btn-success text-white">
       </form>
     {% endif %}

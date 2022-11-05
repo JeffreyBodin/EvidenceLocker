@@ -252,12 +252,12 @@ COUNTRY_CODES = {
     'T1': 'Tor Network'
     }
 
-RESTRICTED_COUNTRIES=[
-    'AF', # Afghanistan
-    'CN', # China
-    'IR', # Iran
-    'IQ', # Iraq
-    'KP', # North Korea
-    'RU', # Russia
-    'SA', # Saudi Arabia
-]
+RESTRICTED_COUNTRIES={
+    "AF": "Oppression based on religion and sex",
+    "CN": "Oppression and genocide based on religion, ethnicity, and political views",
+    "IR": "Oppression based on religion and sex",
+    "IQ": "Oppression based on religion and sex",
+    "KP": "Oppression based on political views",
+    "RU": "Oppression based on political views",
+    "SA": "Oppression based on religion and sex"
+}

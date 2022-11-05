@@ -1,33 +1,11 @@
 // Colors
-$primary:     #8ccbed;
-$secondary:   #5675d1;
-$dark:        #f8f9fa;
-$light:       #343a40;
+$primary:     #3685b5;
+$secondary:   #808080;
+$dark:        #ecf0f1;
+$light:       #404040;
 $black:       #ffffff;
-$white:       #000000;
+$white:       #000000; 
 $body-color:  #d4d9dd;
-
-
-//invert gray scale
-$gray-900: #f8f9fa !default;
-$gray-800: #e9ecef !default;
-$gray-700: #dee2e6 !default;
-$gray-600: #ced4da !default;
-$gray-500: #adb5bd !default;
-$gray-400: #6c757d !default;
-$gray-300: #495057 !default;
-$gray-200: #343a40 !default;
-$gray-100: #212529 !default;
-
-//invert tint and shade
-
-@function tint($color, $percentage) {
-  @return mix(black, $color, $percentage);
-}
-
-@function shade($color, $percentage) {
-  @return mix(white, $color, $percentage);
-}
 
 // Bootstrap and its default variables
 @import "evidencelocker/assets/bootstrap/scss/bootstrap";

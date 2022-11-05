@@ -1,0 +1,86 @@
+{% extends "base_centered.html" %}
+
+{% block pagecontent %}
+
+
+{% set faq= {
+  "Whose Lockers will I be able to see?":'''
+    You may see Lockers for the following users:
+    
+    * Specific users who have chosen to share their Locker with your particular law enforcement agency
+    * Users in your home country who have selected the option "Allow any law enforcement agency in my country to view my Locker". (This only applies if your country is not in our [List of Restricted Countries](/help/restrictedcountries).)
+    ''',
+  "Can you authenticate TEL Exhibit records in court?":'''
+    TEL does not provide expert testimony.
+
+    TEL Exhibits are self-authenticating, provided that a <i class="fas fa-signature-lock text-success"></i> icon is present, and should not require testimony to be admissible in court.''',
+  "Why is two-factor authentication required?":"""
+    Two-factor authentication provides an extra type of account security beyond simply remembering a password. This goes a long way in preventing accounts from being stolen, hacked, or shared. Our users store highly sensitive information with us, so we require all Evidence Locker users - including both victims and law enforcement - to use two-factor authentication.""",
+  "How do I identify or validate digital signatures on The Evidence Locker?":'''
+     Whenever a digital signature is displayed, TEL attempts to re-validate the signature data against the Exhibit to which the signature is attached, using the author\'s public key. TEL then displays one of the following symbols, based on whether or not the signature has been successfully re-validated:
+
+     * <i class="fas fa-signature-lock text-success"></i> - Indicates a successfully re-validated digital signature. The Exhibit was signed by the indicated user, and has not changed since.
+
+     * <i class="fas fa-signature-slash text-danger"></i> - Indicates a digital signature that could not be re-validated. The Exhibit may or may not have changed since it was signed. This symbol should be rarely seen, if ever. Law enforcement should request that the author simply re-sign their statement. Exhibits with invalid signatures are still locked, and may not be edited or deleted.
+
+     * <i class="fas fa-signature text-black"></i> - There is no signature present. The exhibit has not been signed and may still be edited or deleted.''',
+  "How strong are TEL's digital signatures?":'''
+    TEL generates and issues a 512-bit RSA keypair for all users. The user\'s private key - accessible only to that user via password and two-factor authentication - is used to sign the exhibit, and the public key is used to validate that signature.
+
+    TEL digital signatures satisfy the following legal definitions and requirements:
+
+    **United States**
+
+    * "Electronic Signature" under 15 USC 96
+    * "Digital Signature" under 21 CFR 11.3 (even though 21 CFR does not apply to TEL).
+    * TEL follows all other relevant digital signature requirements under 21 CFR 11 (even though 21 CFR does not apply to TEL)
+
+    **United Kingdom**
+
+    * "Advanced electronic signature" under UK eIDAS Article 26, which is admissible  under Article 25
+
+    **Australia**
+
+    * Australia does not define digital signature requirements, however, TEL signatures satisfy various applicable requirements in the Electronic Transactions Act that relate to authentication.
+
+    **European Union**
+
+    * "Advanced electronic signature" under eIDAS Article 26, which is admissible under Article 25.
+    ''',
+  "Why are all timestamps in UTC?":"""
+    UTC time is a standardized clock that does not take time zones or daylight savings into consideration.
+
+    In police investigations, a precise timeline of events is often necessary. By using UTC time instead of local time, we ensure that there is only ever one possible correct interpretation of the timestamp, regardless of travel, differences in location, local seasonal changes, or other factors.""",
+  "Who owns and runs The Evidence Locker?":"""
+    A man in the United States. He would prefer to remain anonymous for now."""
+  }
+%}
+
+
+<div class="card m-0 border-0">
+  <div class="card-body">
+    <h1 class="card-title text-primary fw-bold">Law Enforcement FAQ</h1>
+  </div>
+  <div class="accordion" id="faqaccordion">
+
+    {% for x in faq %}
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="heading-{{ loop.index0 }}">
+        <button class="accordion-button collapsed fw-bold text-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ loop.index0 }}" aria-expanded="true" aria-controls="collapse-{{ loop.index0 }}">
+          {{ x }}
+        </button>
+      </h2>
+      <div id="collapse-{{ loop.index0 }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ loop.index0 }}" data-bs-parent="#faqaccordion">
+        <div class="accordion-body">
+          {% filter markdown %}
+            {{ faq[x].replace('    ','') | safe }}
+          {% endfilter %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+
+    </div>
+  </div>
+</div>
+{% endblock %}

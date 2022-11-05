@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row my-md-2 mx-lg-1">
+<div class="row my-md-2 mx-lg-1 gx-0 gx-lg-4">
   <div class="col col-md-2 col-lg-3">
     {% block leftsidebar %}
     {% endblock %}
@@ -16,7 +16,7 @@
   <div class="col col-md-2 col-lg-3">
     {% block rightsidebar %}
     {% endblock %}
-    {% if user and user.type_id.startswith('a') %}
+    {% if g.user and g.user.type_id.startswith('a') %}
       {% block adminpanel %}
       {% endblock %}
     {% endif %}

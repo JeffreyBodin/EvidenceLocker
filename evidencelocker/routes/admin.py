@@ -12,21 +12,16 @@ from evidencelocker.__main__ import app
 
 @app.get("/admin_dashboard")
 @logged_in_admin
-def admin_dashboard(user):
-
-    police_count = g.db.query(PoliceUser).filter_by(agency_id=None, banned_utc=0).count()
-
+def admin_dashboard():
     return render_template(
-        "admin/home.html",
-        police_count=police_count,
-        user=user
+        "admin/home.html"
         )
 
 @app.get("/login_admin")
 @logged_in_desired
-def get_login_admin(user):
+def get_login_admin():
 
-    if user:
+    if g.user:
         return redirect("/")
 
     return render_template(
@@ -66,8 +61,7 @@ def post_login_admin():
 @app.post("/locker/<username>/ban")
 @app.post("/locker/<username>/unban")
 @logged_in_admin
-@validate_csrf_token
-def locker_username_ban_x(user, username):
+def locker_username_ban_x(username):
 
 	target_user=get_victim_by_username(username)
 
@@ -85,20 +79,18 @@ def locker_username_ban_x(user, username):
 @app.get("/agency")
 @app.get("/agency/<aid>/<anything>/edit")
 @logged_in_admin
-def get_agency(user, aid=None, anything=None):
+def get_agency(aid=None, anything=None):
 
     agency= get_agency_by_id(aid) if aid else None
 
     return render_template(
         "admin/edit_agency.html",
-        a=agency,
-        user=user
+        a=agency
         )
 
 @app.post("/agency")
 @logged_in_admin
-@validate_csrf_token
-def post_agency(user):
+def post_agency():
 
     #create agency
 
@@ -129,8 +121,7 @@ def post_agency(user):
 
 @app.post("/agency/<aid>/<anything>")
 @logged_in_admin
-@validate_csrf_token
-def post_agency_aid_anything(user, aid, anything):
+def post_agency_aid_anything(aid, anything):
 
     #edit agency
 
@@ -147,22 +138,9 @@ def post_agency_aid_anything(user, aid, anything):
 
     return redirect(a.permalink)
 
-
-@app.get("/users/police/unverified")
-@logged_in_admin
-def users_police_unverified(user):
-
-    listing = g.db.query(PoliceUser).filter_by(agency_id=None, banned_utc=0).all()
-
-    return render_template(
-        "admin/police.html",
-        user=user,
-        listing=listing
-        )
-
 @app.get("/users/victims")
 @logged_in_admin
-def users_victims(user):
+def users_victims():
 
     page=max(1, int(request.args.get("page",1)))
 
@@ -170,77 +148,6 @@ def users_victims(user):
 
     return render_template(
         "admin/victims.html",
-        user=user,
         listing=listing,
         page=page
         )
-
-
-@app.get("/police/<pid>")
-@logged_in_admin
-def get_police_pid_admin(user, pid):
-
-    police=get_police_by_id(pid)
-
-    victims=g.db.query(VictimUser).filter(
-        or_(
-            and_(
-                VictimUser.country_code==police.agency.country_code,
-                VictimUser.allow_leo_sharing==True
-                ),
-            VictimUser.id.in_(
-                g.db.query(LockerShare.victim_id).filter(LockerShare.agency_id==police.agency_id).subquery()
-                )
-            )
-        ).all() if police.agency else []
-
-    return render_template(
-        "police_home.html",
-        user=user,
-        listing=victims,
-        target_user=police
-        )
-
-@app.post("/police/<pid>/ban")
-@app.post("/police/<pid>/unban")
-@logged_in_admin
-@validate_csrf_token
-def police_pid_ban_unban(user, pid):
-
-    target_user=get_police_by_id(pid)
-
-    if request.path.endswith("/ban"):
-        target_user.banned_utc=g.time
-        target_user.ban_reason = bleachify(request.form.get("ban_reason",""))
-
-    elif request.path.endswith("/unban"):
-        target_user.banned_utc=0
-
-    g.db.add(target_user)
-    g.db.commit()
-    return redirect(target_user.permalink)
-
-@app.post("/police/<pid>/reject")
-@logged_in_admin
-@validate_csrf_token
-def reject_domain(user, pid):
-
-    target_user=get_police_by_id(pid)
-
-    if target_user.agency_id:
-        abort(400)
-
-    domain=target_user.email.split("@")[1]
-
-    users = g.db.query(PoliceUser).filter(PoliceUser.email.ilike(f"%@{domain}")).all()
-    for user in users:
-        user.banned_utc=g.time
-        user.ban_reason="You are not affiliated with a law enforcement agency."
-        g.db.add(user)
-
-    bd=BadDomain(domain=domain)
-
-    g.db.add(bd)
-    g.db.commit()
-
-    return redirect(target_user.permalink)

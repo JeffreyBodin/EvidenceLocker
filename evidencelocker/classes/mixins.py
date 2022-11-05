@@ -23,7 +23,7 @@ class time_mixin():
     @property
     @lazy
     def created_string(self):
-        return time.strftime("%d %B %Y at %H:%M:%S", time.gmtime(self.created_utc))
+        return f'{time.strftime("%d %B %Y at %H:%M:%S", time.gmtime(self.created_utc))} UTC'
 
     @property
     @lazy
@@ -33,7 +33,7 @@ class time_mixin():
     @property
     @lazy
     def created_date(self):
-        return time.strftime("%d %B %Y", time.gmtime(self.created_utc))
+        return f'{time.strftime("%d %B %Y", time.gmtime(self.created_utc))} UTC'
     
     @property
     def age(self):
@@ -70,7 +70,7 @@ class user_mixin():
             return False
             
         totp=pyotp.TOTP(self.otp_secret)
-        if totp.verify(x):
+        if totp.verify(x, valid_window=1):
             self.last_otp_code=x
             g.db.add(self)
             g.db.commit()
@@ -92,20 +92,17 @@ class json_mixin():
 
     @property
     def json_core(self):
-        
-        data = {x: self.__dict__[x] for x in self.__dict__}
 
         disallowed_values=[
             'login_nonce',
             'otp_secret',
             'pw_hash'
-        ]
+            ]  
+
+        data = {x: self.__dict__[x] for x in self.__dict__ if x not in disallowed_values and not x.startswith("_")}
 
         for entry in [x for x in data.keys()]:
             if type(data[entry]) not in [str, int, type(None)]:
-                data.pop(entry)
-
-            if entry in disallowed_values:
                 data.pop(entry)
 
         if "id" in data:
@@ -128,3 +125,14 @@ class country_mixin():
     @property
     def country(self):
         return COUNTRY_CODES.get(self.country_code.upper())
+
+class lazy_mixin():
+
+    def clear_cache(self, *args):
+
+        if not args:
+            self._lazy={}
+            return
+
+        for arg in args:
+            self._lazy={x:self._lazy[x] for x in self._lazy if not x.startswith(f"{arg}_")}

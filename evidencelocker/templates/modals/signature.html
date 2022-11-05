@@ -1,0 +1,25 @@
+<!--Signature modal-->
+<div class="modal fade" id="sigModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="field-title"></h5>
+        <button type="button" class="close border-0 bg-transparent" data-bs-dismiss="modal" aria-label="Close">
+          <span class="text-black" aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>File integrity and attribution are verified with RSA signatures on SHA-256 hashes, calculated using <code>rsa.sign(json.dumps(data, sort_keys=True).encode('utf-8'), private_key, "SHA-256").hex()</code>, where <code>data</code> is the following Python dictionary representation of this exhibit:</p>
+        <pre id="field-json-for-sig" class="bg-dark text-light"></pre>
+        <p>The signature may be independantly verified with <code>rsa.verify(json.dumps(data, sort_keys=True).encode('utf-8'), bytes.fromhex(signature), public_key)</code>, where <code>signature</code> is the string shown below, and <code>public_key</code> is the user's public key, available in <a href="{% if g.user==target_user %}{{ target_user.py_cert_permalink }}{% else %}{{ target_user.py_cert_permalink | add_token_param(target_user) }}{% endif %}" target="_blank">python</a> or <a href="{% if g.user==target_user %}{{ target_user.pem_cert_permalink }}{% else %}{{ target_user.pem_cert_permalink | add_token_param(target_user) }}{% endif %}" target="_blank">pem</a> formats.</p>
+        <pre></pre>
+        <p>User's signature generated from the user's private key and saved at the time of signing (<span id="field-signed-string"></span>):<br><code id="field-rsa-signature"></code></p>
+      </div>
+      <div class="modal-footer">
+        <p id="display-sig-valid" class="me-auto"><i class="text-success fas fa-signature-lock"></i> This exhibit was signed by {{ target_user.username }}, and has not been altered since it was signed.</p>
+        <p id="display-sig-invalid" class="me-auto d-none"><i class="text-danger fas fa-signature-slash"></i> This exhibit may have been altered since it was signed.</p>
+        <button type="button" class="btn btn-primary ms-auto" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

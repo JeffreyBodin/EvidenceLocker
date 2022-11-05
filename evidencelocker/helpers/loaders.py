@@ -75,7 +75,11 @@ def get_admin_by_id(id, graceful=False):
 
 def get_admin_by_username(name, graceful=False):
 
-    user = g.db.query(AdminUser).filter_by(username=name).first()
+    name = name.replace('\\', '')
+    name = name.replace('_', '\_')
+    name = name.replace('%', '')
+
+    user = g.db.query(AdminUser).filter(AdminUser.username.ilike(name)).first()
 
     if not user and not graceful:
         abort(404)
@@ -93,6 +97,19 @@ def get_exhibit_by_id(id, graceful=False):
         abort(404)
 
     return exhibit
+
+def get_exhibits_by_ids(ids):
+
+    id_list = []
+    for i in ids:
+        if isinstance(i, str):
+            id_list.append(base36decode(i))
+        else:
+            id_list.append(i)
+
+    exhibits = g.db.query(Exhibit).filter(Exhibit.id.in_(id_list)).order_by(Exhibit.id.asc()).all()
+    return exhibits
+
 
 def get_agency_by_id(id, graceful=False):
 

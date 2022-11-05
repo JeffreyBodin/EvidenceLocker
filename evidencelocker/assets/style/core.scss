@@ -40,3 +40,14 @@ $small-font-size: 12px;
     width: 275px;
     z-index: 10000;
 }
+
+//Avoid pagebreak class
+.avoid-pagebreak {
+    page-break-inside: avoid;
+}
+
+//invert colors on dark mode hover
+#dark-mode-toggle:hover {
+    background: $black;
+    color: $white;
+}

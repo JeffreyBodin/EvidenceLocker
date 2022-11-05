@@ -8,11 +8,11 @@ from evidencelocker.__main__ import app
 @app.get("/locker/<username>")
 @app.get("/locker/<username>.json")
 @logged_in_any
-def get_locker_username(user, username):
+def get_locker_username(username):
 
     target_user = get_victim_by_username(username)
 
-    if not target_user.can_be_viewed_by_user(user):
+    if not target_user.can_be_viewed_by_user(g.user):
         abort(404)
 
     if request.path.endswith('.json'):
@@ -20,37 +20,44 @@ def get_locker_username(user, username):
 
     return render_template(
         "victim_userpage.html",
-        user=user,
         target_user=target_user
         )
 
-@app.get("/locker")
-@logged_in_police
-def get_lockers_leo(user):
+@app.get("/locker/<username>/certificate.py")
+@app.get("/locker/<username>/certificate.pem")
+@logged_in_desired
+def get_locker_username_certificate(username):
 
-    if user.agency.country_code in RESTRICTED_COUNTRIES:
-        victims = g.db.query(VictimUser).filter(
-            VictimUser.id.in_(
-                    g.db.query(LockerShare.victim_id).filter(LockerShare.agency_id==user.agency_id).subquery()
-                )
-            ).all()
+    target_user=get_victim_by_username(username)
 
-    else:
+    if not target_user.can_be_viewed_by_user(g.user):
+        abort(404)
 
-        victims = g.db.query(VictimUser).filter(
-            or_(
-                and_(
-                    VictimUser.country_code==user.agency.country_code,
-                    VictimUser.allow_leo_sharing==True
-                    ),
-                VictimUser.id.in_(
-                    g.db.query(LockerShare.victim_id).filter(LockerShare.agency_id==user.agency_id).subquery()
-                    )
-                )
-            ).all()
+    if request.path.endswith(".py"):
+        resp = make_response("rsa."+str(target_user.public_key))
+    elif request.path.endswith(".pem"):
+        resp = make_response(target_user.public_key.save_pkcs1())
 
-    return render_template(
-        "police_home.html",
-        user=user,
-        listing=victims
-        )
+    resp.headers["Content-Type"] = "text/plain"
+
+    return resp
+
+
+# @app.get("/locker/<username>/private.py")
+# @app.get("/locker/<username>/private.pem")
+# @logged_in_victim
+# def get_locker_username_private_certificate(username):
+
+#     target_user=get_victim_by_username(username)
+
+#     if g.user != target_user:
+#         abort(403)
+
+#     if request.path.endswith(".py"):
+#         resp = make_response("rsa."+str(target_user.private_key))
+#     elif request.path.endswith(".pem"):
+#         resp = make_response(target_user.private_key.save_pkcs1())
+
+#     resp.headers["Content-Type"] = "text/plain"
+
+#     return resp
